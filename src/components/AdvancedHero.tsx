@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
-import { ArrowRight, Play } from 'lucide-react';
+import { Play } from 'lucide-react';
 import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
 
 const AdvancedHero = () => {
@@ -54,39 +54,15 @@ const AdvancedHero = () => {
           </div>
           
           {/* Tagline with Typewriter Effect */}
-          <div className="mb-8 animate-slide-in-right">
+          <div className="mb-16 animate-slide-in-right">
             <p className="text-xl md:text-3xl mb-4 tracking-wide">Gear That Moves With You.</p>
             <p className="text-lg md:text-xl opacity-90 max-w-2xl mx-auto">
               Experience the perfect fusion of cutting-edge technology and athletic performance
             </p>
           </div>
           
-          {/* Performance Stats */}
-          <div className="grid grid-cols-3 gap-8 mb-12 animate-slide-in-left">
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-corex-red">50K+</div>
-              <div className="text-sm md:text-base opacity-80">Athletes Trust Us</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-corex-blue">98%</div>
-              <div className="text-sm md:text-base opacity-80">Performance Rating</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-corex-green">24/7</div>
-              <div className="text-sm md:text-base opacity-80">Global Support</div>
-            </div>
-          </div>
-          
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in" style={{ animationDelay: '0.6s' }}>
-            <Button 
-              size="lg" 
-              className="group bg-corex-red hover:bg-white hover:text-black text-white px-8 py-4 text-lg transform hover:scale-105 transition-all duration-300"
-            >
-              Shop Performance
-              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </Button>
-            
+          {/* CTA Buttons - Shop Performance button removed, only Watch Story remains */}
+          <div className="flex justify-center animate-fade-in" style={{ animationDelay: '0.6s' }}>
             <Dialog>
               <DialogTrigger asChild>
                 <Button 
@@ -98,7 +74,8 @@ const AdvancedHero = () => {
                   Watch Story
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-4xl p-0">
+              <DialogContent className="max-w-4xl p-0 relative">
+                {/* Added relative positioning to the DialogContent */}
                 <div className="aspect-video w-full bg-black rounded-lg flex items-center justify-center">
                   <div className="text-white text-center">
                     <Play className="mx-auto mb-4 h-16 w-16" />
@@ -106,6 +83,7 @@ const AdvancedHero = () => {
                     <p className="text-sm opacity-70 mt-2">Video coming soon...</p>
                   </div>
                 </div>
+                {/* The close button styling is handled by the DialogContent component */}
               </DialogContent>
             </Dialog>
           </div>
