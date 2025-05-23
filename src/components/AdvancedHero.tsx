@@ -61,7 +61,7 @@ const AdvancedHero = () => {
             </p>
           </div>
           
-          {/* CTA Buttons - Shop Performance button removed, only Watch Story remains */}
+          {/* CTA Buttons - Only Watch Story button */}
           <div className="flex justify-center animate-fade-in" style={{ animationDelay: '0.6s' }}>
             <Dialog>
               <DialogTrigger asChild>
@@ -74,8 +74,7 @@ const AdvancedHero = () => {
                   Watch Story
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-4xl p-0 relative">
-                {/* Added relative positioning to the DialogContent */}
+              <DialogContent className="max-w-4xl p-0">
                 <div className="aspect-video w-full bg-black rounded-lg flex items-center justify-center">
                   <div className="text-white text-center">
                     <Play className="mx-auto mb-4 h-16 w-16" />
@@ -83,7 +82,6 @@ const AdvancedHero = () => {
                     <p className="text-sm opacity-70 mt-2">Video coming soon...</p>
                   </div>
                 </div>
-                {/* The close button styling is handled by the DialogContent component */}
               </DialogContent>
             </Dialog>
           </div>
