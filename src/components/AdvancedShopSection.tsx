@@ -34,6 +34,7 @@ const AdvancedShopSection = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [quickViewOpen, setQuickViewOpen] = useState(false);
+  const [wishlistItems, setWishlistItems] = useState<string[]>([]);
   const { addItem } = useShoppingCart();
 
   const allProducts: Product[] = [
@@ -183,6 +184,17 @@ const AdvancedShopSection = () => {
     });
   };
 
+  const handleWishlistToggle = (productId: string) => {
+    setWishlistItems(prev => {
+      const isInWishlist = prev.includes(productId);
+      if (isInWishlist) {
+        return prev.filter(id => id !== productId);
+      } else {
+        return [...prev, productId];
+      }
+    });
+  };
+
   return (
     <section id="shop" className="py-20 px-6 md:px-12">
       <div className="max-w-7xl mx-auto">
@@ -304,9 +316,12 @@ const AdvancedShopSection = () => {
                   <Button
                     size="sm"
                     variant="secondary"
-                    className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75"
+                    onClick={() => handleWishlistToggle(product.id)}
+                    className={`transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75 ${
+                      wishlistItems.includes(product.id) ? 'bg-red-500 text-white hover:bg-red-600' : ''
+                    }`}
                   >
-                    <Heart className="h-4 w-4" />
+                    <Heart className={`h-4 w-4 ${wishlistItems.includes(product.id) ? 'fill-current' : ''}`} />
                   </Button>
                 </div>
               </div>
