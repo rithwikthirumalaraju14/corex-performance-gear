@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { Award, Target, Users, Zap } from 'lucide-react';
 
@@ -26,7 +25,7 @@ const AboutSection = () => {
   }, [hasAnimated]);
 
   const animateCounters = () => {
-    const targets = { athletes: 50000, countries: 75, years: 8, products: 200 };
+    const targets = { athletes: 1, countries: 1, years: 1, products: 1 };
     const duration = 2000;
     const steps = 60;
     const stepTime = duration / steps;
@@ -89,13 +88,13 @@ const AboutSection = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
           <div className="text-center animate-scale-in">
             <div className="text-4xl md:text-5xl font-bold text-corex-red mb-2">
-              {counters.athletes.toLocaleString()}+
+              {counters.athletes}
             </div>
             <div className="text-gray-600 font-medium">Athletes Trust Us</div>
           </div>
           <div className="text-center animate-scale-in" style={{ animationDelay: '0.2s' }}>
             <div className="text-4xl md:text-5xl font-bold text-corex-blue mb-2">
-              {counters.countries}+
+              {counters.countries}
             </div>
             <div className="text-gray-600 font-medium">Countries Worldwide</div>
           </div>
@@ -107,7 +106,7 @@ const AboutSection = () => {
           </div>
           <div className="text-center animate-scale-in" style={{ animationDelay: '0.6s' }}>
             <div className="text-4xl md:text-5xl font-bold text-corex-orange mb-2">
-              {counters.products}+
+              {counters.products}
             </div>
             <div className="text-gray-600 font-medium">Performance Products</div>
           </div>

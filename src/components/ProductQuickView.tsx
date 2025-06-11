@@ -30,6 +30,7 @@ const ProductQuickView = ({ product, isOpen, onClose }: ProductQuickViewProps) =
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
   const [selectedImage, setSelectedImage] = useState(0);
+  const [isInWishlist, setIsInWishlist] = useState(false);
   const { addItem } = useShoppingCart();
 
   if (!product) return null;
@@ -49,6 +50,12 @@ const ProductQuickView = ({ product, isOpen, onClose }: ProductQuickViewProps) =
     });
     
     onClose();
+  };
+
+  const handleWishlistToggle = () => {
+    setIsInWishlist(!isInWishlist);
+    // Here you could add the logic to save to a global wishlist state or localStorage
+    console.log(`${isInWishlist ? 'Removed from' : 'Added to'} wishlist:`, product.name);
   };
 
   const discount = product.originalPrice ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) : 0;
@@ -180,9 +187,14 @@ const ProductQuickView = ({ product, isOpen, onClose }: ProductQuickViewProps) =
               </Button>
               
               <div className="flex space-x-2">
-                <Button variant="outline" size="sm" className="flex-1">
-                  <Heart size={16} className="mr-2" />
-                  Wishlist
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className={`flex-1 ${isInWishlist ? 'bg-red-50 border-red-300 text-red-600' : ''}`}
+                  onClick={handleWishlistToggle}
+                >
+                  <Heart size={16} className={`mr-2 ${isInWishlist ? 'fill-current' : ''}`} />
+                  {isInWishlist ? 'In Wishlist' : 'Wishlist'}
                 </Button>
                 <Button variant="outline" size="sm" className="flex-1">
                   <Share2 size={16} className="mr-2" />
