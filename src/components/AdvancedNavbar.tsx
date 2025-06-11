@@ -4,13 +4,19 @@ import { Menu, X, User, Search } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { useShoppingCart } from '@/contexts/ShoppingCartContext';
+import { useProfile } from '@/contexts/ProfileContext';
+import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
+import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 import ShoppingCart from './ShoppingCart';
+import ProfileDisplay from './ProfileDisplay';
 
 const AdvancedNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const { getItemCount } = useShoppingCart();
+  const { profile } = useProfile();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -68,14 +74,30 @@ const AdvancedNavbar = () => {
               <Search size={20} />
             </Button>
             
-            {/* User Account */}
-            <Button 
-              variant="ghost" 
-              size="icon"
-              className="hover:text-corex-red transition-colors duration-300"
-            >
-              <User size={20} />
-            </Button>
+            {/* User Profile */}
+            <Dialog open={profileOpen} onOpenChange={setProfileOpen}>
+              <DialogTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  className="hover:text-corex-red transition-colors duration-300"
+                >
+                  {profile ? (
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage src={profile.avatar} alt={profile.name} />
+                      <AvatarFallback className="text-xs">
+                        {profile.name.split(' ').map(n => n[0]).join('')}
+                      </AvatarFallback>
+                    </Avatar>
+                  ) : (
+                    <User size={20} />
+                  )}
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+                <ProfileDisplay />
+              </DialogContent>
+            </Dialog>
             
             {/* Shopping Cart */}
             <ShoppingCart />
@@ -85,6 +107,25 @@ const AdvancedNavbar = () => {
         {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center space-x-2">
           <ShoppingCart />
+          <Dialog open={profileOpen} onOpenChange={setProfileOpen}>
+            <DialogTrigger asChild>
+              <Button variant="ghost" size="icon">
+                {profile ? (
+                  <Avatar className="w-6 h-6">
+                    <AvatarImage src={profile.avatar} alt={profile.name} />
+                    <AvatarFallback className="text-xs">
+                      {profile.name.split(' ').map(n => n[0]).join('')}
+                    </AvatarFallback>
+                  </Avatar>
+                ) : (
+                  <User size={20} />
+                )}
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+              <ProfileDisplay />
+            </DialogContent>
+          </Dialog>
           <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? <X size={24} /> : <Menu size={24} />}
           </Button>
@@ -123,9 +164,6 @@ const AdvancedNavbar = () => {
             <div className="flex items-center space-x-4 pt-2 border-t border-gray-200">
               <Button variant="ghost" size="icon">
                 <Search size={20} />
-              </Button>
-              <Button variant="ghost" size="icon">
-                <User size={20} />
               </Button>
             </div>
           </div>
