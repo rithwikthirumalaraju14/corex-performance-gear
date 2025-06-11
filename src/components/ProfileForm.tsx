@@ -65,6 +65,16 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
     }));
   };
 
+  const handleNotificationsChange = (checked: boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      preferences: {
+        ...prev.preferences,
+        notifications: checked
+      }
+    }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -239,10 +249,7 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
               type="checkbox"
               id="notifications"
               checked={formData.preferences.notifications}
-              onChange={(e) => handleInputChange('preferences', { 
-                ...formData.preferences, 
-                notifications: e.target.checked 
-              })}
+              onChange={(e) => handleNotificationsChange(e.target.checked)}
               className="rounded"
             />
             <Label htmlFor="notifications">
