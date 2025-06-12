@@ -28,6 +28,9 @@ const BasicInfoSection = ({ formData, errors, onInputChange }: BasicInfoSectionP
           required
         />
         {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+        {!formData.name.trim() && !errors.name && (
+          <p className="text-red-500 text-sm mt-1">Please enter the details</p>
+        )}
       </div>
 
       <div>
@@ -42,22 +45,29 @@ const BasicInfoSection = ({ formData, errors, onInputChange }: BasicInfoSectionP
           required
         />
         {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+        {!formData.email.trim() && !errors.email && (
+          <p className="text-red-500 text-sm mt-1">Please enter the details</p>
+        )}
       </div>
 
       <div>
-        <Label htmlFor="location">Location</Label>
+        <Label htmlFor="location">Location *</Label>
         <Input
           id="location"
           value={formData.location}
           onChange={(e) => onInputChange('location', e.target.value)}
           placeholder="City, Country"
           className={errors.location ? 'border-red-500' : ''}
+          required
         />
         {errors.location && <p className="text-red-500 text-sm mt-1">{errors.location}</p>}
+        {!formData.location.trim() && !errors.location && (
+          <p className="text-red-500 text-sm mt-1">Please enter the details</p>
+        )}
       </div>
 
       <div>
-        <Label htmlFor="bio">Bio</Label>
+        <Label htmlFor="bio">Bio *</Label>
         <Textarea
           id="bio"
           value={formData.bio}
@@ -65,8 +75,12 @@ const BasicInfoSection = ({ formData, errors, onInputChange }: BasicInfoSectionP
           placeholder="Tell us about your fitness journey..."
           rows={3}
           className={errors.bio ? 'border-red-500' : ''}
+          required
         />
         {errors.bio && <p className="text-red-500 text-sm mt-1">{errors.bio}</p>}
+        {!formData.bio.trim() && !errors.bio && (
+          <p className="text-red-500 text-sm mt-1">Please enter the details</p>
+        )}
       </div>
     </div>
   );

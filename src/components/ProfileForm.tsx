@@ -2,12 +2,10 @@
 import { useState } from 'react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
-import { Save } from 'lucide-react';
+import { Save, ArrowLeft } from 'lucide-react';
 import { useProfile } from '@/contexts/ProfileContext';
 import AvatarSection from './profile/AvatarSection';
 import BasicInfoSection from './profile/BasicInfoSection';
-import SizePreferencesSection from './profile/SizePreferencesSection';
-import CategoryPreferencesSection from './profile/CategoryPreferencesSection';
 import NotificationsSection from './profile/NotificationsSection';
 
 interface ProfileFormProps {
@@ -40,7 +38,7 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
     const newErrors = { ...errors };
     
     if (!value.trim()) {
-      newErrors[field] = 'Please fill all the details';
+      newErrors[field] = 'Please enter the details';
     } else {
       delete newErrors[field];
     }
@@ -63,33 +61,6 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
     }
   };
 
-  const handleSizeChange = (sizeType: string, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      preferences: {
-        ...prev.preferences,
-        sizePreferences: {
-          ...prev.preferences.sizePreferences,
-          [sizeType]: value
-        }
-      }
-    }));
-    
-    validateField(`size_${sizeType}`, value);
-  };
-
-  const handleCategoryToggle = (category: string) => {
-    setFormData(prev => ({
-      ...prev,
-      preferences: {
-        ...prev.preferences,
-        favoriteCategories: prev.preferences.favoriteCategories.includes(category)
-          ? prev.preferences.favoriteCategories.filter(c => c !== category)
-          : [...prev.preferences.favoriteCategories, category]
-      }
-    }));
-  };
-
   const handleNotificationsChange = (checked: boolean) => {
     setFormData(prev => ({
       ...prev,
@@ -103,12 +74,12 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const requiredFields = ['name', 'email'];
+    const requiredFields = ['name', 'email', 'location', 'bio'];
     const newErrors: Record<string, string> = {};
     
     requiredFields.forEach(field => {
       if (!formData[field as keyof typeof formData]?.toString().trim()) {
-        newErrors[field] = 'Please fill all the details';
+        newErrors[field] = 'Please enter the details';
       }
     });
     
@@ -130,13 +101,25 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
     <div className="max-w-2xl mx-auto p-6">
       <Card className="p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold mb-2">
-              {profile ? 'Edit Profile' : 'Create Your Profile'}
-            </h2>
-            <p className="text-gray-600">
-              {profile ? 'Update your information' : 'Tell us about yourself to get personalized recommendations'}
-            </p>
+          <div className="flex items-center gap-4 mb-6">
+            {onClose && (
+              <Button 
+                type="button" 
+                variant="ghost" 
+                size="icon"
+                onClick={onClose}
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </Button>
+            )}
+            <div className="text-center flex-1">
+              <h2 className="text-2xl font-bold mb-2">
+                {profile ? 'Edit Profile' : 'Create Your Profile'}
+              </h2>
+              <p className="text-gray-600">
+                {profile ? 'Update your information' : 'Tell us about yourself to get personalized recommendations'}
+              </p>
+            </div>
           </div>
 
           <AvatarSection
@@ -154,17 +137,6 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
             }}
             errors={errors}
             onInputChange={handleInputChange}
-          />
-
-          <SizePreferencesSection
-            sizePreferences={formData.preferences.sizePreferences}
-            errors={errors}
-            onSizeChange={handleSizeChange}
-          />
-
-          <CategoryPreferencesSection
-            favoriteCategories={formData.preferences.favoriteCategories}
-            onCategoryToggle={handleCategoryToggle}
           />
 
           <NotificationsSection
