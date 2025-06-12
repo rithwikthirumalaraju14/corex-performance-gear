@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -33,11 +32,33 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
     }
   });
 
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const validateField = (field: string, value: string) => {
+    const newErrors = { ...errors };
+    
+    if (!value.trim()) {
+      newErrors[field] = 'Please fill all the details';
+    } else {
+      delete newErrors[field];
+    }
+    
+    if (field === 'email' && value.trim() && !value.includes('@')) {
+      newErrors[field] = 'Please enter a valid email address';
+    }
+    
+    setErrors(newErrors);
+  };
+
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
     }));
+    
+    if (typeof value === 'string') {
+      validateField(field, value);
+    }
   };
 
   const handleSizeChange = (sizeType: string, value: string) => {
@@ -51,6 +72,8 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
         }
       }
     }));
+    
+    validateField(`size_${sizeType}`, value);
   };
 
   const handleCategoryToggle = (category: string) => {
@@ -77,6 +100,21 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate all required fields
+    const requiredFields = ['name', 'email'];
+    const newErrors: Record<string, string> = {};
+    
+    requiredFields.forEach(field => {
+      if (!formData[field as keyof typeof formData]?.toString().trim()) {
+        newErrors[field] = 'Please fill all the details';
+      }
+    });
+    
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
     
     if (profile) {
       updateProfile(formData);
@@ -131,26 +169,30 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
           {/* Basic Information */}
           <div className="space-y-4">
             <div>
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="name">Full Name *</Label>
               <Input
                 id="name"
                 value={formData.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
                 placeholder="Enter your full name"
+                className={errors.name ? 'border-red-500' : ''}
                 required
               />
+              {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
             </div>
 
             <div>
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Email *</Label>
               <Input
                 id="email"
                 type="email"
                 value={formData.email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
                 placeholder="Enter your email"
+                className={errors.email ? 'border-red-500' : ''}
                 required
               />
+              {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
             </div>
 
             <div>
@@ -160,7 +202,9 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
                 value={formData.location}
                 onChange={(e) => handleInputChange('location', e.target.value)}
                 placeholder="City, Country"
+                className={errors.location ? 'border-red-500' : ''}
               />
+              {errors.location && <p className="text-red-500 text-sm mt-1">{errors.location}</p>}
             </div>
 
             <div>
@@ -171,7 +215,9 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
                 onChange={(e) => handleInputChange('bio', e.target.value)}
                 placeholder="Tell us about your fitness journey..."
                 rows={3}
+                className={errors.bio ? 'border-red-500' : ''}
               />
+              {errors.bio && <p className="text-red-500 text-sm mt-1">{errors.bio}</p>}
             </div>
           </div>
 
@@ -183,7 +229,7 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
               <div>
                 <Label>Tops</Label>
                 <select
-                  className="w-full p-2 border rounded-md"
+                  className={`w-full p-2 border rounded-md ${errors.size_tops ? 'border-red-500' : ''}`}
                   value={formData.preferences.sizePreferences.tops}
                   onChange={(e) => handleSizeChange('tops', e.target.value)}
                 >
@@ -192,12 +238,13 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
                     <option key={size} value={size}>{size}</option>
                   ))}
                 </select>
+                {errors.size_tops && <p className="text-red-500 text-sm mt-1">{errors.size_tops}</p>}
               </div>
 
               <div>
                 <Label>Bottoms</Label>
                 <select
-                  className="w-full p-2 border rounded-md"
+                  className={`w-full p-2 border rounded-md ${errors.size_bottoms ? 'border-red-500' : ''}`}
                   value={formData.preferences.sizePreferences.bottoms}
                   onChange={(e) => handleSizeChange('bottoms', e.target.value)}
                 >
@@ -206,12 +253,13 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
                     <option key={size} value={size}>{size}</option>
                   ))}
                 </select>
+                {errors.size_bottoms && <p className="text-red-500 text-sm mt-1">{errors.size_bottoms}</p>}
               </div>
 
               <div>
                 <Label>Shoes</Label>
                 <select
-                  className="w-full p-2 border rounded-md"
+                  className={`w-full p-2 border rounded-md ${errors.size_shoes ? 'border-red-500' : ''}`}
                   value={formData.preferences.sizePreferences.shoes}
                   onChange={(e) => handleSizeChange('shoes', e.target.value)}
                 >
@@ -220,6 +268,7 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
                     <option key={size} value={size}>{size}</option>
                   ))}
                 </select>
+                {errors.size_shoes && <p className="text-red-500 text-sm mt-1">{errors.size_shoes}</p>}
               </div>
             </div>
           </div>

@@ -24,6 +24,7 @@ interface ProfileContextType {
   profile: UserProfile | null;
   updateProfile: (updates: Partial<UserProfile>) => void;
   createProfile: (profileData: Omit<UserProfile, 'id' | 'joinDate'>) => void;
+  logout: () => void;
   isProfileComplete: boolean;
 }
 
@@ -62,6 +63,11 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   };
 
+  const logout = () => {
+    setProfile(null);
+    localStorage.removeItem('userProfile');
+  };
+
   const isProfileComplete = Boolean(
     profile?.name && 
     profile?.email && 
@@ -73,6 +79,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
       profile,
       updateProfile,
       createProfile,
+      logout,
       isProfileComplete
     }}>
       {children}

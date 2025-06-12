@@ -98,8 +98,9 @@ export const ShoppingCartProvider = ({ children }: ShoppingCartProviderProps) =>
     });
   };
 
+  // Changed to count unique items instead of total quantity
   const getItemCount = () => {
-    return items.reduce((total, item) => total + item.quantity, 0);
+    return items.length;
   };
 
   const getTotalPrice = () => {

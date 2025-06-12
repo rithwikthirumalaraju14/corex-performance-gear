@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from './ui/button';
 import { ArrowRight, Filter, Grid, List, Search, Eye, Heart } from 'lucide-react';
@@ -302,22 +301,13 @@ const AdvancedShopSection = () => {
                   </Badge>
                 )}
                 
-                {/* Hover Overlay */}
+                {/* Hover Overlay - Removed quick view, only wishlist */}
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-2">
                   <Button
                     size="sm"
                     variant="secondary"
-                    onClick={() => handleQuickView(product)}
-                    className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300"
-                  >
-                    <Eye className="h-4 w-4 mr-1" />
-                    Quick View
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="secondary"
                     onClick={() => handleWishlistToggle(product.id)}
-                    className={`transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75 ${
+                    className={`transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 ${
                       wishlistItems.includes(product.id) ? 'bg-red-500 text-white hover:bg-red-600' : ''
                     }`}
                   >
@@ -385,15 +375,14 @@ const AdvancedShopSection = () => {
                   >
                     Add to Cart
                   </Button>
-                  {viewMode === 'grid' && (
-                    <Button 
-                      variant="outline" 
-                      className="w-full"
-                      onClick={() => handleQuickView(product)}
-                    >
-                      Quick View
-                    </Button>
-                  )}
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={() => handleQuickView(product)}
+                  >
+                    <Eye className="h-4 w-4 mr-2" />
+                    Quick View
+                  </Button>
                 </CardFooter>
               </div>
             </Card>

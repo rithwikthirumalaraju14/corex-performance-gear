@@ -1,17 +1,20 @@
-
 import { useState } from 'react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 import { Badge } from './ui/badge';
-import { Edit, MapPin, Calendar, User, Heart, Settings } from 'lucide-react';
+import { Edit, MapPin, Calendar, User, Heart, Settings, LogOut } from 'lucide-react';
 import { useProfile } from '@/contexts/ProfileContext';
 import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
 import ProfileForm from './ProfileForm';
 
 const ProfileDisplay = () => {
-  const { profile, isProfileComplete } = useProfile();
+  const { profile, isProfileComplete, logout } = useProfile();
   const [isEditOpen, setIsEditOpen] = useState(false);
+
+  const handleLogout = () => {
+    logout();
+  };
 
   if (!profile) {
     return (
@@ -69,17 +72,24 @@ const ProfileDisplay = () => {
                 </div>
               </div>
               
-              <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-                <DialogTrigger asChild>
-                  <Button variant="outline">
-                    <Edit className="w-4 h-4 mr-2" />
-                    Edit Profile
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                  <ProfileForm onClose={() => setIsEditOpen(false)} />
-                </DialogContent>
-              </Dialog>
+              <div className="flex gap-2">
+                <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant="outline">
+                      <Edit className="w-4 h-4 mr-2" />
+                      Edit Profile
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                    <ProfileForm onClose={() => setIsEditOpen(false)} />
+                  </DialogContent>
+                </Dialog>
+                
+                <Button variant="outline" onClick={handleLogout} className="text-red-600 hover:text-red-700">
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Logout
+                </Button>
+              </div>
             </div>
             
             {profile.bio && (

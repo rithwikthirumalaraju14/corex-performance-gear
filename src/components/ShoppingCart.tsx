@@ -32,7 +32,7 @@ const ShoppingCart = () => {
           )}
         </Button>
       </SheetTrigger>
-      <SheetContent className="w-full sm:max-w-lg">
+      <SheetContent className="w-full h-full sm:max-w-lg bg-white/95 backdrop-blur-lg">
         <SheetHeader>
           <SheetTitle className="flex items-center justify-between">
             <span>Shopping Cart ({itemCount})</span>
