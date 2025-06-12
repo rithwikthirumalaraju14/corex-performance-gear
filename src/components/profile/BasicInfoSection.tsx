@@ -11,10 +11,11 @@ interface BasicInfoSectionProps {
     bio: string;
   };
   errors: Record<string, string>;
+  showValidation: boolean;
   onInputChange: (field: string, value: string) => void;
 }
 
-const BasicInfoSection = ({ formData, errors, onInputChange }: BasicInfoSectionProps) => {
+const BasicInfoSection = ({ formData, errors, showValidation, onInputChange }: BasicInfoSectionProps) => {
   return (
     <div className="space-y-4">
       <div>
@@ -27,7 +28,7 @@ const BasicInfoSection = ({ formData, errors, onInputChange }: BasicInfoSectionP
           className={errors.name ? 'border-red-500' : ''}
           required
         />
-        {(errors.name || !formData.name.trim()) && (
+        {showValidation && (errors.name || !formData.name.trim()) && (
           <p className="text-red-500 text-sm mt-1">Please enter the details</p>
         )}
       </div>
@@ -43,8 +44,8 @@ const BasicInfoSection = ({ formData, errors, onInputChange }: BasicInfoSectionP
           className={errors.email ? 'border-red-500' : ''}
           required
         />
-        {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
-        {!errors.email && !formData.email.trim() && (
+        {showValidation && errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+        {showValidation && !errors.email && !formData.email.trim() && (
           <p className="text-red-500 text-sm mt-1">Please enter the details</p>
         )}
       </div>
@@ -59,7 +60,7 @@ const BasicInfoSection = ({ formData, errors, onInputChange }: BasicInfoSectionP
           className={errors.location ? 'border-red-500' : ''}
           required
         />
-        {(errors.location || !formData.location.trim()) && (
+        {showValidation && (errors.location || !formData.location.trim()) && (
           <p className="text-red-500 text-sm mt-1">Please enter the details</p>
         )}
       </div>
@@ -75,7 +76,7 @@ const BasicInfoSection = ({ formData, errors, onInputChange }: BasicInfoSectionP
           className={errors.bio ? 'border-red-500' : ''}
           required
         />
-        {(errors.bio || !formData.bio.trim()) && (
+        {showValidation && (errors.bio || !formData.bio.trim()) && (
           <p className="text-red-500 text-sm mt-1">Please enter the details</p>
         )}
       </div>

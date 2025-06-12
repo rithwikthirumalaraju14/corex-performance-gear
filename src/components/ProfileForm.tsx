@@ -33,6 +33,7 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showValidation, setShowValidation] = useState(false);
 
   const validateField = (field: string, value: string) => {
     const newErrors = { ...errors };
@@ -56,7 +57,7 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
       [field]: value
     }));
     
-    if (typeof value === 'string') {
+    if (typeof value === 'string' && showValidation) {
       validateField(field, value);
     }
   };
@@ -73,6 +74,7 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setShowValidation(true);
     
     const requiredFields = ['name', 'email', 'location', 'bio'];
     const newErrors: Record<string, string> = {};
@@ -94,15 +96,21 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
       createProfile(formData);
     }
     
-    onClose?.();
+    if (onClose) {
+      onClose();
+    }
   };
 
   const handleCancel = () => {
-    onClose?.();
+    if (onClose) {
+      onClose();
+    }
   };
 
   const handleBack = () => {
-    onClose?.();
+    if (onClose) {
+      onClose();
+    }
   };
 
   return (
@@ -144,6 +152,7 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
               bio: formData.bio
             }}
             errors={errors}
+            showValidation={showValidation}
             onInputChange={handleInputChange}
           />
 
