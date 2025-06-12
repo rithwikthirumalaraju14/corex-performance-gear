@@ -97,6 +97,14 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
     onClose?.();
   };
 
+  const handleCancel = () => {
+    onClose?.();
+  };
+
+  const handleBack = () => {
+    onClose?.();
+  };
+
   return (
     <div className="max-w-2xl mx-auto p-6">
       <Card className="p-6">
@@ -107,7 +115,7 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
                 type="button" 
                 variant="ghost" 
                 size="icon"
-                onClick={onClose}
+                onClick={handleBack}
               >
                 <ArrowLeft className="w-5 h-5" />
               </Button>
@@ -150,7 +158,7 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
               {profile ? 'Update Profile' : 'Create Profile'}
             </Button>
             {onClose && (
-              <Button type="button" variant="outline" onClick={onClose}>
+              <Button type="button" variant="outline" onClick={handleCancel}>
                 Cancel
               </Button>
             )}

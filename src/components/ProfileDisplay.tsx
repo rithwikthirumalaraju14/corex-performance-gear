@@ -1,24 +1,37 @@
+
 import { useState } from 'react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 import { Badge } from './ui/badge';
-import { Edit, MapPin, Calendar, User, Heart, Settings, LogOut } from 'lucide-react';
+import { Edit, MapPin, Calendar, User, Heart, Settings, LogOut, X } from 'lucide-react';
 import { useProfile } from '@/contexts/ProfileContext';
 import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
 import ProfileForm from './ProfileForm';
 
-const ProfileDisplay = () => {
+interface ProfileDisplayProps {
+  onClose?: () => void;
+}
+
+const ProfileDisplay = ({ onClose }: ProfileDisplayProps) => {
   const { profile, isProfileComplete, logout } = useProfile();
   const [isEditOpen, setIsEditOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
+    onClose?.();
   };
 
   if (!profile) {
     return (
       <div className="max-w-2xl mx-auto p-6">
+        {onClose && (
+          <div className="flex justify-end mb-4">
+            <Button variant="ghost" size="icon" onClick={onClose}>
+              <X className="w-5 h-5" />
+            </Button>
+          </div>
+        )}
         <Card className="p-8 text-center">
           <User className="w-16 h-16 mx-auto mb-4 text-gray-400" />
           <h2 className="text-2xl font-bold mb-2">Create Your Profile</h2>
@@ -45,6 +58,15 @@ const ProfileDisplay = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
+      {/* Close Button */}
+      {onClose && (
+        <div className="flex justify-end">
+          <Button variant="ghost" size="icon" onClick={onClose}>
+            <X className="w-5 h-5" />
+          </Button>
+        </div>
+      )}
+
       {/* Profile Header */}
       <Card className="p-6">
         <div className="flex flex-col md:flex-row items-start md:items-center gap-6">

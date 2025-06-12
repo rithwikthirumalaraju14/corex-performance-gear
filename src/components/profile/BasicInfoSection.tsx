@@ -27,8 +27,7 @@ const BasicInfoSection = ({ formData, errors, onInputChange }: BasicInfoSectionP
           className={errors.name ? 'border-red-500' : ''}
           required
         />
-        {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
-        {!formData.name.trim() && !errors.name && (
+        {(errors.name || !formData.name.trim()) && (
           <p className="text-red-500 text-sm mt-1">Please enter the details</p>
         )}
       </div>
@@ -45,7 +44,7 @@ const BasicInfoSection = ({ formData, errors, onInputChange }: BasicInfoSectionP
           required
         />
         {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
-        {!formData.email.trim() && !errors.email && (
+        {!errors.email && !formData.email.trim() && (
           <p className="text-red-500 text-sm mt-1">Please enter the details</p>
         )}
       </div>
@@ -60,8 +59,7 @@ const BasicInfoSection = ({ formData, errors, onInputChange }: BasicInfoSectionP
           className={errors.location ? 'border-red-500' : ''}
           required
         />
-        {errors.location && <p className="text-red-500 text-sm mt-1">{errors.location}</p>}
-        {!formData.location.trim() && !errors.location && (
+        {(errors.location || !formData.location.trim()) && (
           <p className="text-red-500 text-sm mt-1">Please enter the details</p>
         )}
       </div>
@@ -77,8 +75,7 @@ const BasicInfoSection = ({ formData, errors, onInputChange }: BasicInfoSectionP
           className={errors.bio ? 'border-red-500' : ''}
           required
         />
-        {errors.bio && <p className="text-red-500 text-sm mt-1">{errors.bio}</p>}
-        {!formData.bio.trim() && !errors.bio && (
+        {(errors.bio || !formData.bio.trim()) && (
           <p className="text-red-500 text-sm mt-1">Please enter the details</p>
         )}
       </div>

@@ -14,6 +14,7 @@ const AdvancedNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [profileOpen, setProfileOpen] = useState(false);
   const { getItemCount } = useShoppingCart();
   const { profile } = useProfile();
@@ -25,6 +26,19 @@ const AdvancedNavbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      // Scroll to shop section
+      const shopSection = document.querySelector('#shop');
+      if (shopSection) {
+        shopSection.scrollIntoView({ behavior: 'smooth' });
+      }
+      setSearchOpen(false);
+      setSearchQuery('');
+    }
+  };
 
   const navItems = [
     { href: '#shop', label: 'Shop' },
@@ -95,7 +109,7 @@ const AdvancedNavbar = () => {
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
-                <ProfileDisplay />
+                <ProfileDisplay onClose={() => setProfileOpen(false)} />
               </DialogContent>
             </Dialog>
             
@@ -123,7 +137,7 @@ const AdvancedNavbar = () => {
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
-              <ProfileDisplay />
+              <ProfileDisplay onClose={() => setProfileOpen(false)} />
             </DialogContent>
           </Dialog>
           <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)}>
@@ -136,12 +150,15 @@ const AdvancedNavbar = () => {
       {searchOpen && (
         <div className="mt-4 animate-slide-in-left">
           <div className="max-w-md mx-auto">
-            <Input
-              placeholder="Search products, categories..."
-              className="w-full"
-              onBlur={() => setSearchOpen(false)}
-              autoFocus
-            />
+            <form onSubmit={handleSearch}>
+              <Input
+                placeholder="Search products, categories..."
+                className="w-full"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                autoFocus
+              />
+            </form>
           </div>
         </div>
       )}
@@ -162,7 +179,7 @@ const AdvancedNavbar = () => {
               </a>
             ))}
             <div className="flex items-center space-x-4 pt-2 border-t border-gray-200">
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" onClick={() => setSearchOpen(!searchOpen)}>
                 <Search size={20} />
               </Button>
             </div>
