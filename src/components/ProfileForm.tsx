@@ -1,12 +1,14 @@
+
 import { useState } from 'react';
 import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Textarea } from './ui/textarea';
-import { Label } from './ui/label';
 import { Card } from './ui/card';
-import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
-import { Camera, Save, User } from 'lucide-react';
-import { useProfile, UserProfile } from '@/contexts/ProfileContext';
+import { Save } from 'lucide-react';
+import { useProfile } from '@/contexts/ProfileContext';
+import AvatarSection from './profile/AvatarSection';
+import BasicInfoSection from './profile/BasicInfoSection';
+import SizePreferencesSection from './profile/SizePreferencesSection';
+import CategoryPreferencesSection from './profile/CategoryPreferencesSection';
+import NotificationsSection from './profile/NotificationsSection';
 
 interface ProfileFormProps {
   onClose?: () => void;
@@ -101,7 +103,6 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate all required fields
     const requiredFields = ['name', 'email'];
     const newErrors: Record<string, string> = {};
     
@@ -125,10 +126,6 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
     onClose?.();
   };
 
-  const categories = ['Training', 'Running', 'Yoga', 'Swimming', 'Basketball', 'Football'];
-  const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
-  const shoeSizes = ['6', '7', '8', '9', '10', '11', '12', '13'];
-
   return (
     <div className="max-w-2xl mx-auto p-6">
       <Card className="p-6">
@@ -142,171 +139,39 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
             </p>
           </div>
 
-          {/* Avatar Section */}
-          <div className="flex justify-center">
-            <div className="relative">
-              <Avatar className="w-20 h-20">
-                <AvatarImage src={formData.avatar} alt={formData.name} />
-                <AvatarFallback>
-                  <User className="w-8 h-8" />
-                </AvatarFallback>
-              </Avatar>
-              <Button
-                type="button"
-                size="sm"
-                variant="outline"
-                className="absolute -bottom-2 -right-2 rounded-full p-2"
-                onClick={() => {
-                  const url = prompt('Enter avatar URL:');
-                  if (url) handleInputChange('avatar', url);
-                }}
-              >
-                <Camera className="w-3 h-3" />
-              </Button>
-            </div>
-          </div>
+          <AvatarSection
+            avatar={formData.avatar}
+            name={formData.name}
+            onAvatarChange={(url) => handleInputChange('avatar', url)}
+          />
 
-          {/* Basic Information */}
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="name">Full Name *</Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
-                placeholder="Enter your full name"
-                className={errors.name ? 'border-red-500' : ''}
-                required
-              />
-              {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
-            </div>
+          <BasicInfoSection
+            formData={{
+              name: formData.name,
+              email: formData.email,
+              location: formData.location,
+              bio: formData.bio
+            }}
+            errors={errors}
+            onInputChange={handleInputChange}
+          />
 
-            <div>
-              <Label htmlFor="email">Email *</Label>
-              <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
-                placeholder="Enter your email"
-                className={errors.email ? 'border-red-500' : ''}
-                required
-              />
-              {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
-            </div>
+          <SizePreferencesSection
+            sizePreferences={formData.preferences.sizePreferences}
+            errors={errors}
+            onSizeChange={handleSizeChange}
+          />
 
-            <div>
-              <Label htmlFor="location">Location</Label>
-              <Input
-                id="location"
-                value={formData.location}
-                onChange={(e) => handleInputChange('location', e.target.value)}
-                placeholder="City, Country"
-                className={errors.location ? 'border-red-500' : ''}
-              />
-              {errors.location && <p className="text-red-500 text-sm mt-1">{errors.location}</p>}
-            </div>
+          <CategoryPreferencesSection
+            favoriteCategories={formData.preferences.favoriteCategories}
+            onCategoryToggle={handleCategoryToggle}
+          />
 
-            <div>
-              <Label htmlFor="bio">Bio</Label>
-              <Textarea
-                id="bio"
-                value={formData.bio}
-                onChange={(e) => handleInputChange('bio', e.target.value)}
-                placeholder="Tell us about your fitness journey..."
-                rows={3}
-                className={errors.bio ? 'border-red-500' : ''}
-              />
-              {errors.bio && <p className="text-red-500 text-sm mt-1">{errors.bio}</p>}
-            </div>
-          </div>
+          <NotificationsSection
+            notifications={formData.preferences.notifications}
+            onNotificationsChange={handleNotificationsChange}
+          />
 
-          {/* Size Preferences */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Size Preferences</h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <Label>Tops</Label>
-                <select
-                  className={`w-full p-2 border rounded-md ${errors.size_tops ? 'border-red-500' : ''}`}
-                  value={formData.preferences.sizePreferences.tops}
-                  onChange={(e) => handleSizeChange('tops', e.target.value)}
-                >
-                  <option value="">Select size</option>
-                  {sizes.map(size => (
-                    <option key={size} value={size}>{size}</option>
-                  ))}
-                </select>
-                {errors.size_tops && <p className="text-red-500 text-sm mt-1">{errors.size_tops}</p>}
-              </div>
-
-              <div>
-                <Label>Bottoms</Label>
-                <select
-                  className={`w-full p-2 border rounded-md ${errors.size_bottoms ? 'border-red-500' : ''}`}
-                  value={formData.preferences.sizePreferences.bottoms}
-                  onChange={(e) => handleSizeChange('bottoms', e.target.value)}
-                >
-                  <option value="">Select size</option>
-                  {sizes.map(size => (
-                    <option key={size} value={size}>{size}</option>
-                  ))}
-                </select>
-                {errors.size_bottoms && <p className="text-red-500 text-sm mt-1">{errors.size_bottoms}</p>}
-              </div>
-
-              <div>
-                <Label>Shoes</Label>
-                <select
-                  className={`w-full p-2 border rounded-md ${errors.size_shoes ? 'border-red-500' : ''}`}
-                  value={formData.preferences.sizePreferences.shoes}
-                  onChange={(e) => handleSizeChange('shoes', e.target.value)}
-                >
-                  <option value="">Select size</option>
-                  {shoeSizes.map(size => (
-                    <option key={size} value={size}>{size}</option>
-                  ))}
-                </select>
-                {errors.size_shoes && <p className="text-red-500 text-sm mt-1">{errors.size_shoes}</p>}
-              </div>
-            </div>
-          </div>
-
-          {/* Favorite Categories */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Favorite Categories</h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-              {categories.map(category => (
-                <Button
-                  key={category}
-                  type="button"
-                  variant={formData.preferences.favoriteCategories.includes(category) ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => handleCategoryToggle(category)}
-                  className="text-sm"
-                >
-                  {category}
-                </Button>
-              ))}
-            </div>
-          </div>
-
-          {/* Notifications */}
-          <div className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              id="notifications"
-              checked={formData.preferences.notifications}
-              onChange={(e) => handleNotificationsChange(e.target.checked)}
-              className="rounded"
-            />
-            <Label htmlFor="notifications">
-              Receive notifications about new products and offers
-            </Label>
-          </div>
-
-          {/* Submit Buttons */}
           <div className="flex gap-3 pt-4">
             <Button type="submit" className="flex-1">
               <Save className="w-4 h-4 mr-2" />
