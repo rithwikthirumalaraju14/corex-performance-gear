@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
@@ -23,6 +22,12 @@ const ProfileDisplay = ({ onClose }: ProfileDisplayProps) => {
     onClose?.();
   };
 
+  const handleDialogClose = () => {
+    setIsCreateOpen(false);
+    setIsEditOpen(false);
+    onClose?.();
+  };
+
   if (!profile) {
     return (
       <div className="max-w-2xl mx-auto p-6">
@@ -44,7 +49,7 @@ const ProfileDisplay = ({ onClose }: ProfileDisplayProps) => {
               <Button size="lg">Create Profile</Button>
             </DialogTrigger>
             <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-              <ProfileForm onClose={() => setIsCreateOpen(false)} />
+              <ProfileForm onClose={handleDialogClose} />
             </DialogContent>
           </Dialog>
         </Card>
@@ -104,7 +109,7 @@ const ProfileDisplay = ({ onClose }: ProfileDisplayProps) => {
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                    <ProfileForm onClose={() => setIsEditOpen(false)} />
+                    <ProfileForm onClose={handleDialogClose} />
                   </DialogContent>
                 </Dialog>
                 

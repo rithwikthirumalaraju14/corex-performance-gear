@@ -1,8 +1,7 @@
-
 import { useState } from 'react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
-import { Save, ArrowLeft } from 'lucide-react';
+import { Save } from 'lucide-react';
 import { useProfile } from '@/contexts/ProfileContext';
 import AvatarSection from './profile/AvatarSection';
 import BasicInfoSection from './profile/BasicInfoSection';
@@ -103,7 +102,6 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
     }
   };
 
-  // Cancel goes home!
   const handleCancel = () => {
     if (onClose) {
       onClose();
@@ -111,28 +109,11 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
     navigate('/');
   };
 
-  // Back just closes the dialog/modal step
-  const handleBack = () => {
-    if (onClose) {
-      onClose();
-    }
-  };
-
   return (
     <div className="max-w-2xl mx-auto p-6">
       <Card className="p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="flex items-center gap-4 mb-6">
-            {onClose && (
-              <Button 
-                type="button" 
-                variant="ghost" 
-                size="icon"
-                onClick={handleBack}
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </Button>
-            )}
             <div className="text-center flex-1">
               <h2 className="text-2xl font-bold mb-2">
                 {profile ? 'Edit Profile' : 'Create Your Profile'}
