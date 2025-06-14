@@ -105,6 +105,9 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
 
   // Cancel goes home!
   const handleCancel = () => {
+    if (onClose) {
+      onClose();
+    }
     navigate('/');
   };
 

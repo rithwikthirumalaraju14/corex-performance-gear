@@ -16,6 +16,7 @@ interface ProfileDisplayProps {
 const ProfileDisplay = ({ onClose }: ProfileDisplayProps) => {
   const { profile, isProfileComplete, logout } = useProfile();
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -38,12 +39,12 @@ const ProfileDisplay = ({ onClose }: ProfileDisplayProps) => {
           <p className="text-gray-600 mb-6">
             Set up your profile to get personalized recommendations and a better shopping experience.
           </p>
-          <Dialog>
+          <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
               <Button size="lg">Create Profile</Button>
             </DialogTrigger>
             <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-              <ProfileForm onClose={() => setIsEditOpen(false)} />
+              <ProfileForm onClose={() => setIsCreateOpen(false)} />
             </DialogContent>
           </Dialog>
         </Card>
