@@ -7,6 +7,7 @@ import { useProfile } from '@/contexts/ProfileContext';
 import AvatarSection from './profile/AvatarSection';
 import BasicInfoSection from './profile/BasicInfoSection';
 import NotificationsSection from './profile/NotificationsSection';
+import { useNavigate } from 'react-router-dom';
 
 interface ProfileFormProps {
   onClose?: () => void;
@@ -14,7 +15,8 @@ interface ProfileFormProps {
 
 const ProfileForm = ({ onClose }: ProfileFormProps) => {
   const { profile, createProfile, updateProfile } = useProfile();
-  
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: profile?.name || '',
     email: profile?.email || '',
@@ -101,12 +103,12 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
     }
   };
 
+  // Cancel goes home!
   const handleCancel = () => {
-    if (onClose) {
-      onClose();
-    }
+    navigate('/');
   };
 
+  // Back just closes the dialog/modal step
   const handleBack = () => {
     if (onClose) {
       onClose();
