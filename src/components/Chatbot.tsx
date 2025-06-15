@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from "react";
-import { MessageCircle } from "lucide-react";
+import { Dumbbell } from "lucide-react";
 import { Button } from "./ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import ChatWindow from "./chatbot/ChatWindow";
@@ -107,11 +107,15 @@ const Chatbot = () => {
       <div className="fixed bottom-8 right-8 z-50">
         {!open && (
           <Button
-            className="rounded-full p-3 bg-corex-blue text-white shadow-lg hover:bg-corex-red transition"
+            className="rounded-full p-3 bg-gradient-to-br from-corex-red via-corex-blue to-corex-green shadow-xl hover:scale-110 hover:shadow-2xl transition-transform duration-300 text-white animate-pulse"
+            style={{
+              boxShadow: "0 6px 32px 0 rgba(0,0,0,0.13), 0 1.5px 4px 0 rgba(0,0,0,0.10)"
+            }}
             onClick={() => setOpen(true)}
-            aria-label="Open chatbot"
+            aria-label="Open gym chatbot"
+            size="icon"
           >
-            <MessageCircle className="w-6 h-6" />
+            <Dumbbell className="w-8 h-8 text-white drop-shadow" />
           </Button>
         )}
       </div>
@@ -132,3 +136,4 @@ const Chatbot = () => {
 };
 
 export default Chatbot;
+
