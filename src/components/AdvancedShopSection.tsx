@@ -27,19 +27,12 @@ interface Product {
   category: string;
   badge?: string;
   featured?: boolean;
-  video?: string;
-  fitGuide?: {
-    fit: string;
-    material: string;
-    care: string;
-    sizeChart: { size: string, chest: string, length: string }[];
-  };
 }
 
 const allProducts: Product[] = [
   {
     id: 'xt-001',
-    name: 'MaxLift Gym Tee',
+    name: 'X-Perform Training Tee',
     price: 45.00,
     originalPrice: 60.00,
     image: 'https://images.unsplash.com/photo-1581655353564-df123a1eb820?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80',
@@ -47,35 +40,23 @@ const allProducts: Product[] = [
       'https://images.unsplash.com/photo-1581655353564-df123a1eb820?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80',
       'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=715&q=80'
     ],
-    description: 'Rugged gym tee engineered for heavy lifting, HIIT, and sweat—keeps you dry and comfortable through every PR.',
-    features: ['Sweat-wicking fabric', 'Anti-odor tech', 'Flatlock seams', '4-way stretch'],
+    description: 'Premium performance tee engineered for maximum comfort and durability during intense training sessions.',
+    features: ['Moisture-wicking fabric', 'Anti-odor technology', 'Flatlock seams', '4-way stretch'],
     rating: 4.8,
     reviews: 124,
     sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
     colors: ['Black', 'White', 'Navy', 'Red'],
     category: 'tees',
     badge: 'SALE',
-    featured: true,
-    video: 'https://www.youtube.com/embed/xp2qjshr-r4', // sample
-    fitGuide: {
-      fit: "Athletic fit. True to size.",
-      material: "92% Polyester / 8% Spandex",
-      care: "Machine wash cold, tumble dry low.",
-      sizeChart: [
-        { size: "S", chest: "34-36\"", length: "28\"" },
-        { size: "M", chest: "38-40\"", length: "29\"" },
-        { size: "L", chest: "42-44\"", length: "30\"" },
-        { size: "XL", chest: "46-48\"", length: "31\"" }
-      ]
-    }
+    featured: true
   },
   {
     id: 'cs-002',
-    name: 'Power Compression Shorts',
+    name: 'Core Compression Shorts',
     price: 38.00,
     image: 'https://images.unsplash.com/photo-1506902540976-5005d40e1e9e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80',
-    description: 'Gym-ready compression shorts for muscle support, circulation, and relentless squat sets.',
-    features: ['Graduated compression', 'Breathable mesh', 'Key pocket', 'UPF 50+ protection'],
+    description: 'High-performance compression shorts designed for optimal muscle support and recovery.',
+    features: ['Graduated compression', 'Breathable mesh panels', 'Secure pocket', 'UPF 50+ protection'],
     rating: 4.9,
     reviews: 89,
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
@@ -85,11 +66,11 @@ const allProducts: Product[] = [
   },
   {
     id: 'xb-003',
-    name: 'FlexFit Gym Bra',
+    name: 'X-Flex Sports Bra',
     price: 42.00,
     image: 'https://images.unsplash.com/photo-1568252542512-9fe8fe9c87bb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=686&q=80',
-    description: 'Sweat-ready sports bra with strong support and quick-dry technology for any gym challenge.',
-    features: ['High support', 'Removable padding', 'Racerback', 'Sweat-wicking'],
+    description: 'Medium to high support sports bra with innovative moisture management technology.',
+    features: ['Medium support', 'Removable padding', 'Racerback design', 'Sweat-wicking'],
     rating: 4.7,
     reviews: 156,
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
@@ -99,11 +80,11 @@ const allProducts: Product[] = [
   },
   {
     id: 'xj-004',
-    name: 'RepRunner Joggers',
+    name: 'X-Run Performance Joggers',
     price: 65.00,
     image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80',
-    description: 'Tapered gym joggers for stretching, running, or leg day. Mobility and style meet sweat-fighting fabric.',
-    features: ['Water-resistant', 'Zip pockets', 'Tapered', 'Reflective details'],
+    description: 'Premium joggers designed for runners who demand comfort, flexibility, and style.',
+    features: ['Water-resistant fabric', 'Zip pockets', 'Tapered fit', 'Reflective details'],
     rating: 4.6,
     reviews: 92,
     sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
@@ -112,12 +93,12 @@ const allProducts: Product[] = [
   },
   {
     id: 'xh-005',
-    name: 'Alpha Training Hoodie',
+    name: 'X-Core Training Hoodie',
     price: 75.00,
     originalPrice: 95.00,
     image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80',
-    description: 'Warm up, cool down, or crush the weights—this hoodie has the comfort and grit for gym warriors.',
-    features: ['French terry', 'Kangaroo pocket', 'Thumbhole cuffs', 'Athletic fit'],
+    description: 'Versatile training hoodie perfect for pre-workout warmups and post-training recovery.',
+    features: ['French terry fabric', 'Kangaroo pocket', 'Thumbhole cuffs', 'Athletic fit'],
     rating: 4.8,
     reviews: 67,
     sizes: ['S', 'M', 'L', 'XL', 'XXL'],
@@ -127,11 +108,11 @@ const allProducts: Product[] = [
   },
   {
     id: 'xt-006',
-    name: 'SweatPro Gym Tank',
+    name: 'X-Tank Performance Top',
     price: 35.00,
     image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80',
-    description: 'Ultra-light gym tank for summer workouts, serious airflow, and an easy flex.',
-    features: ['Featherweight', 'Quick-dry performance', 'Breathable mesh', 'Loose fit'],
+    description: 'Lightweight performance tank designed for high-intensity training and summer workouts.',
+    features: ['Ultra-lightweight', 'Quick-dry technology', 'Mesh ventilation', 'Loose fit'],
     rating: 4.5,
     reviews: 143,
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
