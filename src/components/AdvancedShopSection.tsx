@@ -298,17 +298,19 @@ const AdvancedShopSection = () => {
                   alt={product.name} 
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
-                {/* WISHLIST BUTTON - Visual Upgrade */}
+                {/* WISHLIST BUTTON - Small & Modern */}
                 <button
                   className={`
-                    absolute top-3 left-3 z-10 
-                    p-2 rounded-full bg-white/80 backdrop-blur-md shadow-lg
+                    absolute top-2 left-2 z-10
+                    w-8 h-8 flex items-center justify-center
+                    rounded-full bg-white bg-opacity-90
+                    border border-gray-200
+                    shadow-sm
+                    outline-none
                     transition-all duration-200
-                    border-2 border-white
-                    hover:bg-corex-red/10
-                    active:scale-95 focus:outline-none
+                    hover:scale-110 hover:shadow-md hover:border-corex-red/70
                     focus-visible:ring-2 focus-visible:ring-corex-red
-                    group/wishlist
+                    active:scale-95
                   `}
                   aria-label={isWishlisted(product.id) ? "Remove from wishlist" : "Add to wishlist"}
                   onClick={() => handleWishlist(product.id)}
@@ -317,16 +319,15 @@ const AdvancedShopSection = () => {
                 >
                   <span
                     className={`
-                      inline-flex items-center justify-center drop-shadow wishlist-heart
-                      transition-transform duration-300 
+                      flex items-center justify-center transition-colors duration-200
                       ${isWishlisted(product.id)
-                        ? "text-corex-red fill-corex-red scale-110 animate-pulse"
-                        : "text-gray-400 hover:text-corex-red hover:scale-110"}
+                        ? "text-corex-red"
+                        : "text-gray-400 group-hover:text-corex-red"}
                     `}
                   >
                     {isWishlisted(product.id)
-                      ? <Heart className="w-7 h-7" fill="currentColor" />
-                      : <Heart className="w-7 h-7" />}
+                      ? <Heart className="w-5 h-5 fill-corex-red" />
+                      : <Heart className="w-5 h-5" />}
                   </span>
                 </button>
 
