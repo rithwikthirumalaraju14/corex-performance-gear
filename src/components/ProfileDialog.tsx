@@ -1,3 +1,4 @@
+
 import * as React from "react";
 import { useState } from "react";
 import {
@@ -17,6 +18,12 @@ import { User, LogOut } from "lucide-react";
 import { useProfile } from "@/hooks/useProfile";
 import { useToast } from "@/components/ui/use-toast";
 import ProfileAuthForm from './ProfileAuthForm';
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent
+} from "@/components/ui/tabs";
 
 export function ProfileDialog({ trigger }: { trigger?: React.ReactNode }) {
   const { profile, loading, error, updateProfile } = useProfile();
@@ -27,8 +34,9 @@ export function ProfileDialog({ trigger }: { trigger?: React.ReactNode }) {
   });
   const [editMode, setEditMode] = useState(false);
   const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState("profile");
 
-  // Once profile loaded, set form
+  // Update form state from loaded profile
   React.useEffect(() => {
     if (profile) {
       setForm({
@@ -91,68 +99,101 @@ export function ProfileDialog({ trigger }: { trigger?: React.ReactNode }) {
         ) : error ? (
           <div className="text-destructive">{error}</div>
         ) : profile && (
-          <form onSubmit={handleSave} className="space-y-4">
-            <div className="flex items-center gap-4">
-              <Avatar className="h-16 w-16">
-                <AvatarImage src={form.avatar_url || undefined} />
-                <AvatarFallback>
-                  {profile.full_name?.[0]?.toUpperCase() || <User size={28} />}
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                {!editMode ? (
-                  <div className="font-medium">{profile.full_name}</div>
-                ) : (
-                  <Input
-                    value={form.full_name}
-                    placeholder="Full Name"
-                    onChange={e => setForm(f => ({ ...f, full_name: e.target.value }))}
-                  />
-                )}
-              </div>
-            </div>
-            <div>
-              <label className="text-sm font-medium">Phone</label>
-              {!editMode ? (
-                <div>{profile.phone || <span className="text-muted-foreground">No phone</span>}</div>
-              ) : (
-                <Input
-                  type="tel"
-                  value={form.phone}
-                  placeholder="Phone"
-                  onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
-                />
-              )}
-            </div>
-            <div>
-              <label className="text-sm font-medium">Avatar URL</label>
-              {!editMode ? (
-                <div>
-                  {profile.avatar_url
-                    ? <span className="text-xs break-all">{profile.avatar_url}</span>
-                    : <span className="text-muted-foreground">No avatar</span>}
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid grid-cols-4 mb-5">
+              <TabsTrigger value="profile">Profile</TabsTrigger>
+              <TabsTrigger value="watchlist">Watchlist</TabsTrigger>
+              <TabsTrigger value="orders">Orders</TabsTrigger>
+              <TabsTrigger value="address">Address</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="profile">
+              <form onSubmit={handleSave} className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <Avatar className="h-16 w-16">
+                    <AvatarImage src={form.avatar_url || undefined} />
+                    <AvatarFallback>
+                      {profile.full_name?.[0]?.toUpperCase() || <User size={28} />}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    {!editMode ? (
+                      <div className="font-medium">{profile.full_name}</div>
+                    ) : (
+                      <Input
+                        value={form.full_name}
+                        placeholder="Full Name"
+                        onChange={e => setForm(f => ({ ...f, full_name: e.target.value }))}
+                      />
+                    )}
+                  </div>
                 </div>
-              ) : (
-                <Input
-                  type="url"
-                  value={form.avatar_url}
-                  placeholder="Avatar Image URL"
-                  onChange={e => setForm(f => ({ ...f, avatar_url: e.target.value }))}
-                />
-              )}
-            </div>
-            <DialogFooter className="flex w-full justify-between items-center">
-              <Button type="button" variant="secondary" onClick={() => setEditMode(!editMode)}>
-                {editMode ? "Cancel" : "Edit"}
-              </Button>
-              {editMode && (
-                <Button type="submit">Save</Button>
-              )}
-              <Button type="button" onClick={handleSignOut} variant="outline">
-                <LogOut className="mr-1" size={16} /> Logout
-              </Button>
-            </DialogFooter>
-          </form>
+                <div>
+                  <label className="text-sm font-medium">Phone</label>
+                  {!editMode ? (
+                    <div>{profile.phone || <span className="text-muted-foreground">No phone</span>}</div>
+                  ) : (
+                    <Input
+                      type="tel"
+                      value={form.phone}
+                      placeholder="Phone"
+                      onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
+                    />
+                  )}
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Avatar URL</label>
+                  {!editMode ? (
+                    <div>
+                      {profile.avatar_url
+                        ? <span className="text-xs break-all">{profile.avatar_url}</span>
+                        : <span className="text-muted-foreground">No avatar</span>}
+                    </div>
+                  ) : (
+                    <Input
+                      type="url"
+                      value={form.avatar_url}
+                      placeholder="Avatar Image URL"
+                      onChange={e => setForm(f => ({ ...f, avatar_url: e.target.value }))}
+                    />
+                  )}
+                </div>
+                <DialogFooter className="flex w-full justify-between items-center">
+                  <Button type="button" variant="secondary" onClick={() => setEditMode(!editMode)}>
+                    {editMode ? "Cancel" : "Edit"}
+                  </Button>
+                  {editMode && (
+                    <Button type="submit">Save</Button>
+                  )}
+                  <Button type="button" onClick={handleSignOut} variant="outline">
+                    <LogOut className="mr-1" size={16} /> Logout
+                  </Button>
+                </DialogFooter>
+              </form>
+            </TabsContent>
+
+            <TabsContent value="watchlist">
+              <div className="min-h-[120px] flex flex-col items-center justify-center text-muted-foreground">
+                <span className="mb-2">Your watchlist will appear here.</span>
+                <span className="text-xs">(Feature coming soon!)</span>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="orders">
+              <div className="min-h-[120px] flex flex-col items-center justify-center text-muted-foreground">
+                <span className="mb-2">Your orders will appear here.</span>
+                <span className="text-xs">(Feature coming soon!)</span>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="address">
+              <div className="min-h-[120px] flex flex-col items-center justify-center text-muted-foreground">
+                <span className="mb-2">Your address info will appear here.</span>
+                <span className="text-xs">(Feature coming soon!)</span>
+              </div>
+            </TabsContent>
+
+          </Tabs>
         )}
       </DialogContent>
     </Dialog>
