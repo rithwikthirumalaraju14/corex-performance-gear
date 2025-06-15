@@ -12,37 +12,61 @@ function getProductList(): string[] {
 
 const MODEL = "meta-llama/llama-4-scout-17b-16e-instruct";
 
+const SAMPLE_QUESTIONS = [
+  "What is the difference between joggers and tights?",
+  "Are your compression shorts available in navy?",
+  "Which tops have moisture-wicking?",
+  "What's your most popular hoodie?",
+  "Do you have any items on sale?"
+];
+
+const getHistory = () => {
+  try {
+    const raw = localStorage.getItem("cx-bot-history");
+    if (raw) return JSON.parse(raw);
+  } catch { }
+  return undefined;
+};
+const saveHistory = (messages: { role: string; content: string }[]) => {
+  localStorage.setItem("cx-bot-history", JSON.stringify(messages));
+};
+
 const Chatbot = () => {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<
     { role: "system" | "user" | "assistant"; content: string }[]
-  >([
-    {
-      role: "system",
-      content:
-        "You are an expert assistant for a sports clothing brand. Available products: " +
-        getProductList().join(", ") +
-        ". Answer questions about available products and their attributes only. If asked about stock level, say you do not have inventory data.",
-    },
-  ]);
+  >(() => {
+    const h = getHistory();
+    return h && Array.isArray(h) && h[0]?.role === "system"
+      ? h
+      : [{
+          role: "system",
+          content:
+            "You are an expert assistant for a sports clothing brand. Available products: " +
+            getProductList().join(", ") +
+            ". Answer questions about available products and their attributes only. If asked about stock level, say you do not have inventory data.",
+        }];
+  });
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const chatPanelRef = useRef<HTMLDivElement>(null);
 
-  // On open auto-focus input
   useEffect(() => {
     if (open && inputRef.current) inputRef.current.focus();
   }, [open]);
 
-  // Scroll to bottom on new messages
   useEffect(() => {
     if (chatPanelRef.current)
       chatPanelRef.current.scrollTop = chatPanelRef.current.scrollHeight;
   }, [messages.length, open]);
 
-  // Send prompt to Edge Function
+  useEffect(() => {
+    // save chat except for empty or only system
+    if (messages.length > 1) saveHistory(messages);
+  }, [messages]);
+
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
     const nextMessages: { role: "system" | "user" | "assistant"; content: string }[] = [
@@ -87,11 +111,15 @@ const Chatbot = () => {
     setLoading(false);
   };
 
-  // Enter to send
   const handleInputKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && input.trim() && !loading) {
       sendMessage();
     }
+  };
+
+  const handleSample = (q: string) => {
+    setInput(q);
+    inputRef.current?.focus();
   };
 
   // Button that hovers bottom right
@@ -109,31 +137,38 @@ const Chatbot = () => {
         )}
       </div>
       {open && (
-        <div className="fixed bottom-4 right-4 w-80 max-w-full z-50 bg-white border rounded-xl shadow-2xl flex flex-col h-[480px]">
+        <div className="fixed bottom-4 right-4 w-80 max-w-full z-50 bg-white border rounded-xl shadow-2xl flex flex-col h-[480px] animate-fade-in">
           <div className="flex justify-between items-center py-3 px-4 border-b">
             <span className="font-bold text-corex-blue">Ask Core X AI</span>
-            <button onClick={() => setOpen(false)} aria-label="Close chat">
+            <button onClick={() => { setOpen(false);} } aria-label="Close chat">
               <X className="h-5 w-5 text-gray-400 hover:text-gray-800" />
             </button>
           </div>
-          <div
-            className="flex-1 overflow-y-auto bg-gray-50 px-4 py-2 space-y-2 text-sm"
-            ref={chatPanelRef}
-          >
+          <div className="flex-1 overflow-y-auto bg-gray-50 px-4 py-2 space-y-2 text-sm" ref={chatPanelRef}>
+            {messages.length <= 1 && (
+              <div className="text-gray-400 text-xs my-2 font-medium">
+                👋 Hi there! Ask me anything about our products.<br />
+                <div className="flex flex-wrap mt-2 gap-1.5">
+                  {SAMPLE_QUESTIONS.map(q => (
+                    <button
+                      key={q}
+                      className="rounded border bg-white text-gray-600 px-2 py-1 text-xs shadow-sm hover:bg-corex-blue/10 focus:bg-corex-blue/10"
+                      style={{ borderColor: '#0088ff' }}
+                      tabIndex={0}
+                      onClick={() => handleSample(q)}
+                    >
+                      {q}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             {messages.slice(1).map((m, i) => (
               <div
                 key={i}
-                className={`mb-2 flex ${
-                  m.role === "user" ? "justify-end" : "justify-start"
-                }`}
+                className={`mb-2 flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
               >
-                <div
-                  className={`rounded-lg px-3 py-2 ${
-                    m.role === "user"
-                      ? "bg-corex-blue text-white"
-                      : "bg-gray-200 text-gray-800"
-                  }`}
-                >
+                <div className={`rounded-lg px-3 py-2 ${m.role === "user" ? "bg-corex-blue text-white" : "bg-gray-200 text-gray-800"}`}>
                   {m.content}
                 </div>
               </div>
