@@ -3,6 +3,9 @@ import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Play } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
+import AdvancedHeroLogo from "./AdvancedHeroLogo";
+import AdvancedHeroTagline from "./AdvancedHeroTagline";
+import AdvancedHeroFloatingDots from "./AdvancedHeroFloatingDots";
 
 const AdvancedHero = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -27,58 +30,24 @@ const AdvancedHero = () => {
             className="w-full h-full object-cover brightness-75"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/80"></div>
-
           {/* Animated Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-r from-corex-red/20 via-transparent to-corex-blue/20 animate-gradient bg-300%"></div>
         </div>
       </div>
 
       {/* Floating Elements */}
-      <div className="absolute top-20 left-10 w-2 h-2 bg-corex-red rounded-full animate-float opacity-70"></div>
-      <div
-        className="absolute top-40 right-20 w-3 h-3 bg-corex-blue rounded-full animate-float opacity-60"
-        style={{ animationDelay: "1s" }}
-      ></div>
-      <div
-        className="absolute bottom-40 left-20 w-1 h-1 bg-corex-green rounded-full animate-float opacity-80"
-        style={{ animationDelay: "2s" }}
-      ></div>
+      <AdvancedHeroFloatingDots />
 
       {/* Hero Content */}
       <div className="relative z-10 h-full flex flex-col justify-center items-center text-white px-6">
         <div className="text-center max-w-4xl animate-fade-in">
           {/* Animated Logo */}
           <div className="mb-8">
-            <h1 className="text-6xl md:text-8xl lg:text-9xl font-bebas tracking-wider mb-4 animate-scale-in">
-              <span className="inline-block hover:text-corex-red transition-colors duration-300 cursor-default">
-                C
-              </span>
-              <span className="inline-block hover:text-corex-blue transition-colors duration-300 cursor-default">
-                O
-              </span>
-              <span className="inline-block hover:text-corex-green transition-colors duration-300 cursor-default">
-                R
-              </span>
-              <span className="inline-block hover:text-corex-orange transition-colors duration-300 cursor-default">
-                E
-              </span>
-              <span className="mx-4">•</span>
-              <span className="inline-block hover:text-corex-purple transition-colors duration-300 cursor-default">
-                X
-              </span>
-            </h1>
+            <AdvancedHeroLogo />
           </div>
 
           {/* Tagline with Typewriter Effect */}
-          <div className="mb-16 animate-slide-in-right">
-            <p className="text-xl md:text-3xl mb-4 tracking-wide">
-              Gear That Moves With You.
-            </p>
-            <p className="text-lg md:text-xl opacity-90 max-w-2xl mx-auto">
-              Experience the perfect fusion of cutting-edge technology and
-              athletic performance
-            </p>
-          </div>
+          <AdvancedHeroTagline />
 
           {/* CTA Buttons - Only Watch Story button */}
           <div
