@@ -44,7 +44,7 @@ const ShopGrid = ({
     ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
     : 'grid-cols-1'
     }`}>
-    {products.map((product, index) => (
+    {products.map((product) => (
       <ProductCard
         key={product.id}
         product={{
@@ -57,10 +57,10 @@ const ShopGrid = ({
         handleWishlist={handleWishlist}
         handleAddToCart={handleAddToCart}
         handleQuickView={handleQuickView}
-        highlightName={!!nameHighlight}
       />
     ))}
   </div>
 );
 
 export default ShopGrid;
+

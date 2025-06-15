@@ -1,4 +1,3 @@
-
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Heart, Eye } from 'lucide-react';
@@ -59,11 +58,10 @@ const ProductCard = ({
     <div className={`relative group ${viewMode === 'list' ? 'w-48' : 'aspect-[3/4] w-full'} overflow-hidden`}>
       <img
         src={product.image}
-        alt={product.name}
+        alt={product.name.replace(/<[^>]+>/g, '')}
         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         loading="lazy"
       />
-      {/* WISHLIST BUTTON - with accessible label */}
       <button
         className="absolute top-2 left-2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white bg-opacity-90 border border-gray-200 shadow-sm outline-none transition-all duration-200 hover:scale-110 hover:shadow-md hover:border-corex-red/70 focus-visible:ring-2 focus-visible:ring-corex-red active:scale-95"
         aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
@@ -91,7 +89,17 @@ const ProductCard = ({
           ))}
           <span className="text-sm text-gray-600 ml-2">({product.reviews})</span>
         </div>
-        <div className="text-lg font-medium mb-2">{product.name}</div>
+        <div className="text-lg font-medium mb-2"
+          dangerouslySetInnerHTML={
+            /<mark[\s>]/.test(product.name)
+              ? { __html: product.name }
+              : undefined
+          }
+        >
+          {
+            !/<mark[\s>]/.test(product.name) && product.name
+          }
+        </div>
         {viewMode === 'list' && (
           <p className="text-sm text-gray-600 mb-3">{product.description}</p>
         )}
