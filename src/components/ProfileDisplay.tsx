@@ -7,6 +7,7 @@ import { Edit, MapPin, Calendar, User, Heart, Settings, LogOut, X } from 'lucide
 import { useProfile } from '@/contexts/ProfileContext';
 import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
 import ProfileForm from './ProfileForm';
+import { useWishlist } from "@/hooks/useWishlist";
 
 interface ProfileDisplayProps {
   onClose?: () => void;
@@ -193,6 +194,23 @@ const ProfileDisplay = ({ onClose }: ProfileDisplayProps) => {
           </div>
         </Card>
       </div>
+
+      {/* Wishlist section */}
+      <Card className="p-6">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2"><Heart className="w-5 h-5 text-corex-red" /> Wishlist</h2>
+        <div className="flex flex-wrap gap-2">
+          {profile.wishlist.length > 0 ? (
+            profile.wishlist.map(productId => (
+              <Badge key={productId} className="flex items-center gap-1">
+                <Heart className="w-3 h-3" />
+                {productId}
+              </Badge>
+            ))
+          ) : (
+            <p className="text-gray-500 text-sm">No products in your wishlist yet.</p>
+          )}
+        </div>
+      </Card>
 
       {/* Preferences */}
       <Card className="p-6">

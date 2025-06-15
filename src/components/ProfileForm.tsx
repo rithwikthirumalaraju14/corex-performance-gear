@@ -7,21 +7,25 @@ import AvatarSection from './profile/AvatarSection';
 import BasicInfoSection from './profile/BasicInfoSection';
 import NotificationsSection from './profile/NotificationsSection';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from "@/integrations/supabase/client";
+import { Input } from "@/components/ui/input";
 
 interface ProfileFormProps {
   onClose?: () => void;
 }
 
 const ProfileForm = ({ onClose }: ProfileFormProps) => {
-  const { profile, createProfile, updateProfile } = useProfile();
+  const { profile, updateProfile } = useProfile();
   const navigate = useNavigate();
 
+  // Load fields from Supabase profile
   const [formData, setFormData] = useState({
-    name: profile?.name || '',
+    name: profile?.full_name || '',
     email: profile?.email || '',
     bio: profile?.bio || '',
     location: profile?.location || '',
-    avatar: profile?.avatar || '',
+    avatar: profile?.avatar_url || '',
+    phone: profile?.phone || '',
     preferences: {
       favoriteCategories: profile?.preferences?.favoriteCategories || [],
       sizePreferences: {
@@ -73,33 +77,32 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setShowValidation(true);
-    
-    const requiredFields = ['name', 'email', 'location', 'bio'];
+
+    const requiredFields = ['name', 'email'];
     const newErrors: Record<string, string> = {};
-    
     requiredFields.forEach(field => {
       if (!formData[field as keyof typeof formData]?.toString().trim()) {
         newErrors[field] = 'Please enter the details';
       }
     });
-    
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-    
-    if (profile) {
-      updateProfile(formData);
-    } else {
-      createProfile(formData);
-    }
-    
-    if (onClose) {
-      onClose();
-    }
+
+    const updates = {
+      full_name: formData.name,
+      email: formData.email,
+      avatar_url: formData.avatar,
+      phone: formData.phone,
+    };
+
+    await updateProfile(updates);
+
+    if (onClose) onClose();
   };
 
   const handleCancel = () => {
@@ -123,25 +126,27 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
               </p>
             </div>
           </div>
-
           <AvatarSection
             avatar={formData.avatar}
             name={formData.name}
-            onAvatarChange={(url) => handleInputChange('avatar', url)}
+            onAvatarChange={(url) => setFormData(f => ({ ...f, avatar: url }))}
           />
-
-          <BasicInfoSection
-            formData={{
-              name: formData.name,
-              email: formData.email,
-              location: formData.location,
-              bio: formData.bio
-            }}
-            errors={errors}
-            showValidation={showValidation}
-            onInputChange={handleInputChange}
-          />
-
+          <div className="space-y-4">
+            <div>
+              <label className="font-medium">Full Name</label>
+              <Input value={formData.name} onChange={e => setFormData(f => ({ ...f, name: e.target.value }))} required />
+              {errors.name && showValidation && <div className="text-red-600 text-sm">{errors.name}</div>}
+            </div>
+            <div>
+              <label className="font-medium">Email</label>
+              <Input type="email" value={formData.email} onChange={e => setFormData(f => ({ ...f, email: e.target.value }))} required />
+              {errors.email && showValidation && <div className="text-red-600 text-sm">{errors.email}</div>}
+            </div>
+            <div>
+              <label className="font-medium">Phone</label>
+              <Input type="tel" value={formData.phone} onChange={e => setFormData(f => ({ ...f, phone: e.target.value }))} />
+            </div>
+          </div>
           <NotificationsSection
             notifications={formData.preferences.notifications}
             onNotificationsChange={handleNotificationsChange}

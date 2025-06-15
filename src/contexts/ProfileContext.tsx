@@ -1,13 +1,12 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { supabase } from "@/integrations/supabase/client";
 
 export interface UserProfile {
   id: string;
-  name: string;
-  email: string;
-  avatar?: string;
-  bio?: string;
-  location?: string;
+  email?: string;
+  full_name?: string;
+  avatar_url?: string;
+  phone?: string;
   preferences: {
     favoriteCategories: string[];
     sizePreferences: {
@@ -18,14 +17,17 @@ export interface UserProfile {
     notifications: boolean;
   };
   joinDate: string;
+  wishlist: string[]; // Product IDs
 }
 
 interface ProfileContextType {
   profile: UserProfile | null;
-  updateProfile: (updates: Partial<UserProfile>) => void;
-  createProfile: (profileData: Omit<UserProfile, 'id' | 'joinDate'>) => void;
-  logout: () => void;
+  updateProfile: (updates: Partial<UserProfile>) => Promise<void>;
+  createProfile: (profileData: Omit<UserProfile, 'id' | 'joinDate' | 'wishlist'>) => Promise<void>;
+  logout: () => Promise<void>;
   isProfileComplete: boolean;
+  refreshProfile: () => Promise<void>;
+  toggleWishlist: (productId: string) => Promise<void>;
 }
 
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
@@ -33,46 +35,114 @@ const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
 export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
 
-  // Load profile from localStorage on mount
+  // On mount/session change, load profile and wishlist from Supabase
   useEffect(() => {
-    const savedProfile = localStorage.getItem('userProfile');
-    if (savedProfile) {
-      setProfile(JSON.parse(savedProfile));
-    }
+    const load = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", session.user.id)
+          .maybeSingle();
+        if (data) {
+          const { data: wishlistRows } = await supabase
+            .from("wishlists")
+            .select("product_id")
+            .eq("user_id", session.user.id);
+          setProfile({
+            ...data,
+            preferences: {
+              favoriteCategories: [],
+              sizePreferences: { tops: "", bottoms: "", shoes: "" },
+              notifications: true,
+            },
+            joinDate: data.created_at ?? new Date().toISOString(),
+            wishlist: wishlistRows?.map(w => w.product_id) ?? [],
+          });
+        }
+      } else {
+        setProfile(null);
+      }
+    };
+    load();
+
+    // Listen to auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) load();
+      else setProfile(null);
+    });
+    return () => subscription.unsubscribe();
   }, []);
 
-  // Save profile to localStorage whenever it changes
-  useEffect(() => {
-    if (profile) {
-      localStorage.setItem('userProfile', JSON.stringify(profile));
+  const refreshProfile = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user) {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", session.user.id)
+        .maybeSingle();
+      if (data) {
+        const { data: wishlistRows } = await supabase
+          .from("wishlists")
+          .select("product_id")
+          .eq("user_id", session.user.id);
+        setProfile(prev =>
+          prev
+            ? {
+                ...prev,
+                ...data,
+                wishlist: wishlistRows?.map(w => w.product_id) ?? [],
+              }
+            : null
+        );
+      }
     }
-  }, [profile]);
+  };
 
-  const createProfile = (profileData: Omit<UserProfile, 'id' | 'joinDate'>) => {
-    const newProfile: UserProfile = {
-      ...profileData,
-      id: `user_${Date.now()}`,
-      joinDate: new Date().toISOString(),
+  const createProfile = async (profileData: Omit<UserProfile, 'id' | 'joinDate' | 'wishlist'>) => {
+    // Not needed, handled by trigger on signup
+  };
+
+  const updateProfile = async (updates: Partial<UserProfile>) => {
+    if (!profile) return;
+    const { id, full_name, email, avatar_url, phone } = {
+      ...profile,
+      ...updates,
     };
-    setProfile(newProfile);
+    await supabase.from("profiles").update({
+      full_name, email, avatar_url, phone,
+      updated_at: new Date().toISOString(),
+    }).eq("id", id);
+    await refreshProfile();
   };
 
-  const updateProfile = (updates: Partial<UserProfile>) => {
-    if (profile) {
-      setProfile({ ...profile, ...updates });
-    }
-  };
-
-  const logout = () => {
+  const logout = async () => {
+    await supabase.auth.signOut();
     setProfile(null);
-    localStorage.removeItem('userProfile');
   };
 
   const isProfileComplete = Boolean(
-    profile?.name && 
-    profile?.email && 
-    profile?.preferences?.sizePreferences?.tops
+    profile?.full_name && profile?.email
   );
+
+  // Add/Remove Wishlist item
+  const toggleWishlist = async (productId: string) => {
+    if (!profile) return;
+    if (profile.wishlist.includes(productId)) {
+      // Remove
+      await supabase.from("wishlists")
+        .delete()
+        .eq("user_id", profile.id)
+        .eq("product_id", productId);
+    } else {
+      // Add
+      await supabase.from("wishlists")
+        .insert({ user_id: profile.id, product_id: productId });
+    }
+    await refreshProfile();
+  };
 
   return (
     <ProfileContext.Provider value={{
@@ -80,7 +150,9 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
       updateProfile,
       createProfile,
       logout,
-      isProfileComplete
+      isProfileComplete,
+      refreshProfile,
+      toggleWishlist,
     }}>
       {children}
     </ProfileContext.Provider>
