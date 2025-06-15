@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { ArrowRight, Filter, Grid, List, Search, Eye, Heart, HeartOff } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardTitle } from './ui/card';
@@ -198,6 +198,12 @@ const AdvancedShopSection = () => {
       add(productId);
     }
   };
+
+  // --- PERSIST PRODUCT NAMES TO WINDOW for chatbot to use! ---
+  useEffect(() => {
+    // Available product names for chatbot context
+    window.__ADVANCED_PRODUCTS_LIST__ = allProducts.map((x) => x.name);
+  }, []);
 
   return (
     <section id="shop" className="py-20 px-6 md:px-12">
