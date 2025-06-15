@@ -3,14 +3,13 @@ import React, { useState, useRef, useEffect } from "react";
 import { MessageCircle, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import { supabase } from "@/integrations/supabase/client";
 
 // Helper to fetch product names from global scope (populated by window)
 function getProductList(): string[] {
   // @ts-ignore
   return window.__ADVANCED_PRODUCTS_LIST__ || [];
 }
-
-const MODEL = "meta-llama/llama-4-scout-17b-16e-instruct";
 
 const SAMPLE_QUESTIONS = [
   "What is the difference between joggers and tights?",
@@ -77,20 +76,20 @@ const Chatbot = () => {
     setLoading(true);
     setInput("");
     try {
-      const res = await fetch("/functions/v1/groq-chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      const { data, error } = await supabase.functions.invoke("groq-chat", {
+        body: {
           messages: nextMessages.map((m) => ({
             role: m.role,
             content: m.content,
           })),
-        }),
+        },
       });
-      const data = await res.json();
-      if (!res.ok || data.error) {
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      if (data.error) {
         setMessages((msgs) => [
           ...msgs,
           { role: "assistant", content: "There was an error: " + (data.error || "Unknown error.") },
@@ -103,9 +102,10 @@ const Chatbot = () => {
         { role: "assistant", content: data.message || "(No answer returned from Groq.)" },
       ]);
     } catch (e) {
+      const errorMessage = e instanceof Error ? e.message : "An unknown error occurred.";
       setMessages((msgs) => [
         ...msgs,
-        { role: "assistant", content: "Failed to connect to Groq Chat." },
+        { role: "assistant", content: `Error: ${errorMessage}` },
       ]);
     }
     setLoading(false);
