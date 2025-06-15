@@ -4,6 +4,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { useShoppingCart } from '@/contexts/ShoppingCartContext';
 import ShoppingCart from './ShoppingCart';
+import { ProfileDialog } from "./ProfileDialog";
 
 const AdvancedNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -80,15 +81,8 @@ const AdvancedNavbar = () => {
             >
               <Search size={20} />
             </Button>
-            {/* User Profile Button (inactive) */}
-            <Button 
-              variant="ghost"
-              size="icon"
-              className="hover:text-corex-red transition-colors duration-300"
-              disabled
-            >
-              <User size={20} />
-            </Button>
+            {/* User Profile */}
+            <ProfileDialog />
             {/* Shopping Cart */}
             <ShoppingCart />
           </div>
@@ -97,13 +91,14 @@ const AdvancedNavbar = () => {
         {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center space-x-2">
           <ShoppingCart />
-          <Button 
-            variant="ghost"
-            size="icon"
-            disabled
-          >
-            <User size={20} />
-          </Button>
+          {/* Mobile profile dialog */}
+          <ProfileDialog
+            trigger={
+              <Button variant="ghost" size="icon">
+                <User size={20} />
+              </Button>
+            }
+          />
           <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? <X size={24} /> : <Menu size={24} />}
           </Button>
