@@ -1,4 +1,5 @@
 
+import * as React from "react";
 import { useState } from "react";
 import {
   Dialog,
@@ -148,3 +149,4 @@ export function ProfileDialog({ trigger }: { trigger?: React.ReactNode }) {
     </Dialog>
   );
 }
+
