@@ -22,8 +22,6 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
   const [formData, setFormData] = useState({
     name: profile?.full_name || '',
     email: profile?.email || '',
-    bio: profile?.bio || '',
-    location: profile?.location || '',
     avatar: profile?.avatar_url || '',
     phone: profile?.phone || '',
     preferences: {
@@ -98,6 +96,7 @@ const ProfileForm = ({ onClose }: ProfileFormProps) => {
       email: formData.email,
       avatar_url: formData.avatar,
       phone: formData.phone,
+      // No bio/location!
     };
 
     await updateProfile(updates);

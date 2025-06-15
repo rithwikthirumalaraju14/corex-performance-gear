@@ -78,23 +78,17 @@ const ProfileDisplay = ({ onClose }: ProfileDisplayProps) => {
       <Card className="p-6">
         <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
           <Avatar className="w-24 h-24">
-            <AvatarImage src={profile.avatar} alt={profile.name} />
+            <AvatarImage src={profile.avatar_url || undefined} alt={profile.full_name || ""} />
             <AvatarFallback className="text-2xl">
-              {profile.name.split(' ').map(n => n[0]).join('')}
+              {(profile.full_name || "").split(' ').map(n => n[0]).join('')}
             </AvatarFallback>
           </Avatar>
           
           <div className="flex-1">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
-                <h1 className="text-3xl font-bold">{profile.name}</h1>
-                <p className="text-gray-600">{profile.email}</p>
-                {profile.location && (
-                  <div className="flex items-center gap-1 text-gray-500 mt-1">
-                    <MapPin className="w-4 h-4" />
-                    <span>{profile.location}</span>
-                  </div>
-                )}
+                <h1 className="text-3xl font-bold">{profile.full_name || ""}</h1>
+                <p className="text-gray-600">{profile.email || ""}</p>
                 <div className="flex items-center gap-1 text-gray-500 mt-1">
                   <Calendar className="w-4 h-4" />
                   <span>Member since {memberSince}</span>
@@ -121,9 +115,7 @@ const ProfileDisplay = ({ onClose }: ProfileDisplayProps) => {
               </div>
             </div>
             
-            {profile.bio && (
-              <p className="text-gray-700 mt-4">{profile.bio}</p>
-            )}
+            {/* Removed bio display (not in DB/type) */}
           </div>
         </div>
       </Card>

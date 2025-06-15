@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Menu, X, User, Search } from 'lucide-react';
 import { Button } from './ui/button';
@@ -98,9 +97,9 @@ const AdvancedNavbar = () => {
                 >
                   {profile ? (
                     <Avatar className="w-8 h-8">
-                      <AvatarImage src={profile.avatar} alt={profile.name} />
+                      <AvatarImage src={profile.avatar_url || undefined} alt={profile.full_name || ""} />
                       <AvatarFallback className="text-xs">
-                        {profile.name.split(' ').map(n => n[0]).join('')}
+                        {(profile.full_name || "").split(' ').map(n => n[0]).join('')}
                       </AvatarFallback>
                     </Avatar>
                   ) : (
@@ -126,9 +125,9 @@ const AdvancedNavbar = () => {
               <Button variant="ghost" size="icon">
                 {profile ? (
                   <Avatar className="w-6 h-6">
-                    <AvatarImage src={profile.avatar} alt={profile.name} />
+                    <AvatarImage src={profile.avatar_url || undefined} alt={profile.full_name || ""} />
                     <AvatarFallback className="text-xs">
-                      {profile.name.split(' ').map(n => n[0]).join('')}
+                      {(profile.full_name || "").split(' ').map(n => n[0]).join('')}
                     </AvatarFallback>
                   </Avatar>
                 ) : (
