@@ -4,15 +4,13 @@ import { MessageCircle, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
-// Minimal local storage key for API key
-const GROQ_API_KEY_LOCALSTORAGE = "groq_cloud_api_key";
-const MODEL = "meta-llama/llama-4-scout-17b-16e-instruct";
-
 // Helper to fetch product names from global scope (populated by window)
 function getProductList(): string[] {
   // @ts-ignore
   return window.__ADVANCED_PRODUCTS_LIST__ || [];
 }
+
+const MODEL = "meta-llama/llama-4-scout-17b-16e-instruct";
 
 const Chatbot = () => {
   const [open, setOpen] = useState(false);
@@ -29,9 +27,7 @@ const Chatbot = () => {
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [apiKey, setApiKey] = useState<string | null>(
-    localStorage.getItem(GROQ_API_KEY_LOCALSTORAGE)
-  );
+
   const inputRef = useRef<HTMLInputElement>(null);
   const chatPanelRef = useRef<HTMLDivElement>(null);
 
@@ -46,18 +42,9 @@ const Chatbot = () => {
       chatPanelRef.current.scrollTop = chatPanelRef.current.scrollHeight;
   }, [messages.length, open]);
 
-  // Save API key
-  const handleApiKey = () => {
-    if (input.trim()) {
-      localStorage.setItem(GROQ_API_KEY_LOCALSTORAGE, input.trim());
-      setApiKey(input.trim());
-      setInput("");
-    }
-  };
-
-  // Send prompt to Groq Cloud API
+  // Send prompt to Edge Function
   const sendMessage = async () => {
-    if (!input.trim() || loading || !apiKey) return;
+    if (!input.trim() || loading) return;
     const nextMessages: { role: "system" | "user" | "assistant"; content: string }[] = [
       ...messages,
       { role: "user", content: input.trim() },
@@ -66,38 +53,35 @@ const Chatbot = () => {
     setLoading(true);
     setInput("");
     try {
-      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      const res = await fetch("/functions/v1/groq-chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
-          model: MODEL,
           messages: nextMessages.map((m) => ({
             role: m.role,
             content: m.content,
           })),
-          max_tokens: 256,
         }),
       });
       const data = await res.json();
-      if (!res.ok) {
+      if (!res.ok || data.error) {
         setMessages((msgs) => [
           ...msgs,
-          { role: "assistant", content: "There was an error: " + (data.error?.message || "Unknown error.") },
+          { role: "assistant", content: "There was an error: " + (data.error || "Unknown error.") },
         ]);
         setLoading(false);
         return;
       }
       setMessages((msgs) => [
         ...msgs,
-        { role: "assistant", content: data.choices?.[0]?.message?.content || "(No answer returned from Groq.)" },
+        { role: "assistant", content: data.message || "(No answer returned from Groq.)" },
       ]);
     } catch (e) {
       setMessages((msgs) => [
         ...msgs,
-        { role: "assistant", content: "Failed to connect to Groq Cloud." },
+        { role: "assistant", content: "Failed to connect to Groq Chat." },
       ]);
     }
     setLoading(false);
@@ -105,11 +89,8 @@ const Chatbot = () => {
 
   // Enter to send
   const handleInputKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && input.trim() && !loading && apiKey) {
+    if (e.key === "Enter" && input.trim() && !loading) {
       sendMessage();
-    }
-    if (e.key === "Enter" && !apiKey) {
-      handleApiKey();
     }
   };
 
@@ -166,47 +147,22 @@ const Chatbot = () => {
             )}
           </div>
           <div className="border-t p-3 bg-white">
-            {!apiKey ? (
-              <>
-                <Input
-                  ref={inputRef}
-                  type="password"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  className="mb-2"
-                  placeholder="Paste your Groq Cloud API key..."
-                  onKeyDown={handleInputKeyDown}
-                  autoFocus
-                />
-                <Button
-                  className="w-full bg-corex-blue text-white"
-                  onClick={handleApiKey}
-                  disabled={!input.trim()}
-                >
-                  Save API Key
-                </Button>
-                <div className="text-xs text-gray-500 mt-2">
-                  Your key is stored only in your browser.
-                </div>
-              </>
-            ) : (
-              <div className="flex gap-2">
-                <Input
-                  ref={inputRef}
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  className="flex-1"
-                  placeholder="Ask about our products..."
-                  onKeyDown={handleInputKeyDown}
-                  disabled={loading}
-                  autoFocus
-                />
-                <Button onClick={sendMessage} disabled={!input.trim() || loading} className="bg-corex-blue text-white">
-                  Send
-                </Button>
-              </div>
-            )}
+            <div className="flex gap-2">
+              <Input
+                ref={inputRef}
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                className="flex-1"
+                placeholder="Ask about our products..."
+                onKeyDown={handleInputKeyDown}
+                disabled={loading}
+                autoFocus
+              />
+              <Button onClick={sendMessage} disabled={!input.trim() || loading} className="bg-corex-blue text-white">
+                Send
+              </Button>
+            </div>
           </div>
         </div>
       )}
