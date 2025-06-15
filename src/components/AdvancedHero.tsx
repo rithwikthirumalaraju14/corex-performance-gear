@@ -67,13 +67,14 @@ const AdvancedHero = () => {
               </DialogTrigger>
               <DialogContent className="max-w-4xl p-0">
                 <div className="aspect-video w-full bg-black rounded-lg flex items-center justify-center">
-                  <div className="text-white text-center">
-                    <Play className="mx-auto mb-4 h-16 w-16" />
-                    <p className="text-xl">Core X Brand Story</p>
-                    <p className="text-sm opacity-70 mt-2">
-                      Video coming soon...
-                    </p>
-                  </div>
+                  <iframe
+                    className="w-full h-full rounded-lg"
+                    src="https://www.youtube.com/embed/NW2Sibk4u1U"
+                    title="Core X Brand Story"
+                    frameBorder="0"
+                    allow="autoplay; encrypted-media"
+                    allowFullScreen
+                  ></iframe>
                 </div>
               </DialogContent>
             </Dialog>
@@ -92,3 +93,4 @@ const AdvancedHero = () => {
 };
 
 export default AdvancedHero;
+
