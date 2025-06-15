@@ -298,17 +298,36 @@ const AdvancedShopSection = () => {
                   alt={product.name} 
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
-                {/* WISHLIST BUTTON */}
+                {/* WISHLIST BUTTON - Visual Upgrade */}
                 <button
-                  className="absolute top-3 left-3 z-10 p-1 rounded-full bg-white/80 hover:bg-white shadow"
+                  className={`
+                    absolute top-3 left-3 z-10 
+                    p-2 rounded-full bg-white/80 backdrop-blur-md shadow-lg
+                    transition-all duration-200
+                    border-2 border-white
+                    hover:bg-corex-red/10
+                    active:scale-95 focus:outline-none
+                    focus-visible:ring-2 focus-visible:ring-corex-red
+                    group/wishlist
+                  `}
                   aria-label={isWishlisted(product.id) ? "Remove from wishlist" : "Add to wishlist"}
                   onClick={() => handleWishlist(product.id)}
                   disabled={wishlistLoading}
                   tabIndex={0}
                 >
-                  {isWishlisted(product.id)
-                    ? <Heart className="text-corex-red fill-corex-red" size={20} />
-                    : <Heart className="text-gray-400" size={20} />}
+                  <span
+                    className={`
+                      inline-flex items-center justify-center drop-shadow wishlist-heart
+                      transition-transform duration-300 
+                      ${isWishlisted(product.id)
+                        ? "text-corex-red fill-corex-red scale-110 animate-pulse"
+                        : "text-gray-400 hover:text-corex-red hover:scale-110"}
+                    `}
+                  >
+                    {isWishlisted(product.id)
+                      ? <Heart className="w-7 h-7" fill="currentColor" />
+                      : <Heart className="w-7 h-7" />}
+                  </span>
                 </button>
 
                 {product.badge && (
