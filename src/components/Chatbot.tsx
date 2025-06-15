@@ -1,6 +1,5 @@
-
 import React, { useState, useRef, useEffect } from "react";
-import { MessageCircle } from "lucide-react";
+import { Dumbbell } from "lucide-react";
 import { Button } from "./ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import ChatWindow from "./chatbot/ChatWindow";
@@ -33,7 +32,7 @@ const Chatbot = () => {
       : [{
           role: "system",
           content:
-            "You are a helpful and friendly assistant for Core X, a sports clothing brand. You are an expert on our products and can also answer general knowledge questions, especially about fitness and wellness. Available products: " +
+            "You are a helpful and friendly assistant for Core X, a sports clothing brand. You are an expert on our products and can also answer general knowledge questions, especially about fitness and wellness. If the user asks about order tracking or returns/exchanges, politely explain that you can't access user-specific order data, but you can guide them. For order tracking, instruct them to sign in and visit their orders page, or contact support with their order number. For returns or exchanges, guide them to the returns portal or contact support for assistance. Never make up personal information. Available products: " +
             getProductList().join(", ") +
             ". If asked about stock level, say you do not have inventory data.",
         }];
@@ -54,6 +53,31 @@ const Chatbot = () => {
 
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
+    const userInput = input.trim().toLowerCase();
+    // Intercept order/return/track intents for helpful canned responses
+    if (
+      /(where.*order|track.*order|status.*order|my order status)/i.test(userInput)
+    ) {
+      setMessages((msgs) => [
+        ...msgs,
+        { role: "user", content: input.trim() },
+        { role: "assistant", content: "I can't view personal order data, but you can track your order by signing in and visiting your orders page. If you need help, please contact our support team with your order number!" }
+      ]);
+      setInput("");
+      return;
+    }
+    if (
+      /(how.*return|start.*return|exchange.*item|replace.*item|return.*item)/i.test(userInput)
+    ) {
+      setMessages((msgs) => [
+        ...msgs,
+        { role: "user", content: input.trim() },
+        { role: "assistant", content: "To return or exchange an item, please visit our returns portal or contact our support team. We'll provide step-by-step instructions to help!" }
+      ]);
+      setInput("");
+      return;
+    }
+
     const nextMessages: { role: "system" | "user" | "assistant"; content: string }[] = [
       ...messages,
       { role: "user", content: input.trim() },
@@ -107,11 +131,15 @@ const Chatbot = () => {
       <div className="fixed bottom-8 right-8 z-50">
         {!open && (
           <Button
-            className="rounded-full p-3 bg-corex-blue text-white shadow-lg hover:bg-corex-red transition"
+            className="rounded-full p-3 bg-gradient-to-br from-corex-red via-corex-blue to-corex-green shadow-xl hover:scale-110 hover:shadow-2xl transition-transform duration-300 text-white animate-pulse"
+            style={{
+              boxShadow: "0 6px 32px 0 rgba(0,0,0,0.13), 0 1.5px 4px 0 rgba(0,0,0,0.10)"
+            }}
             onClick={() => setOpen(true)}
-            aria-label="Open chatbot"
+            aria-label="Open gym chatbot"
+            size="icon"
           >
-            <MessageCircle className="w-6 h-6" />
+            <Dumbbell className="w-8 h-8 text-white drop-shadow" />
           </Button>
         )}
       </div>

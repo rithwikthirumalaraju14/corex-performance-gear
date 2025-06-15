@@ -53,15 +53,10 @@ const ProductCard = ({
   handleWishlist, handleAddToCart, handleQuickView
 }: ProductCardProps) => (
   <div
-    className={`relative overflow-hidden border-0 shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group animate-fade-in 
-    glass-card
-    ${viewMode === 'list' ? 'flex flex-row' : ''}
-    `}
+    className={`overflow-hidden border-0 shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 animate-fade-in ${viewMode === 'list' ? 'flex flex-row' : ''}`}
     style={{ animationDelay: '0s' }}
   >
-    {/* Spotlight effect */}
-    <div className="spotlight pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-    <div className={`relative ${viewMode === 'list' ? 'w-48' : 'aspect-[3/4] w-full'} overflow-hidden`}>
+    <div className={`relative group ${viewMode === 'list' ? 'w-48' : 'aspect-[3/4] w-full'} overflow-hidden`}>
       <img
         src={product.image}
         alt={product.name}
@@ -121,22 +116,20 @@ const ProductCard = ({
         </div>
       </div>
       <div className="p-4 pt-0 space-y-2">
-        <button
+        <Button
           onClick={() => handleAddToCart(product)}
-          className="w-full font-bold bg-black hover:bg-corex-red text-white
-          transition-colors duration-300 relative focus:z-10 fancy-btn"
+          className="w-full bg-black hover:bg-corex-red text-white transition-colors duration-300"
         >
           Add to Cart
-        </button>
-        <button
-          className="w-full border border-gray-300 bg-white hover:bg-corex-blue/10 transition-colors duration-300 relative fancy-btn"
+        </Button>
+        <Button
+          variant="outline"
+          className="w-full"
           onClick={() => handleQuickView(product)}
         >
-          <span className="inline-flex items-center">
-            <svg className="h-4 w-4 mr-2 text-corex-blue" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M15 15l-6-6"/><path d="M9 15h6"/></svg>
-            Quick View
-          </span>
-        </button>
+          <Eye className="h-4 w-4 mr-2" />
+          Quick View
+        </Button>
       </div>
     </div>
   </div>

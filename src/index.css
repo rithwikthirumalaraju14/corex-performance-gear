@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -137,77 +138,3 @@ html {
 .loading {
   @apply animate-pulse bg-gray-200;
 }
-
-/* --- ReactBits-inspired EFFECTS --- */
-
-/* Animated Gradient Text */
-@keyframes gradient-move {
-  0%,100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-.animate-gradient-text {
-  background-size: 200% 200%;
-  animation: gradient-move 3s ease-in-out infinite;
-}
-
-/* Glassmorphism effect for cards */
-.glass-card {
-  background: linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(245,245,255,0.05) 100%);
-  backdrop-filter: blur(16px) saturate(120%);
-  border-radius: 1rem;
-  box-shadow: 0 4px 32px 0 rgba(30,30,55,0.17);
-  border: 1px solid rgba(195, 195, 215, 0.15);
-}
-
-/* Fancy button with animated border and glow */
-.fancy-btn {
-  position: relative;
-  z-index: 1;
-  overflow: hidden;
-  border-radius: 0.75rem;
-  transition: transform 0.15s cubic-bezier(.25,.8,.25,1), box-shadow 0.2s;
-  box-shadow: 0 2px 24px 0 rgba(0,136,255, 0.07);
-}
-
-.fancy-btn::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  border-radius: 0.85rem;
-  padding: 2px;
-  background: linear-gradient(90deg, #ea384c, #0088ff, #00ff88, #ea384c 100%);
-  background-size: 300% 300%;
-  animation: gradient-move 2.5s linear infinite;
-  z-index: 0;
-  opacity: 0.5;
-  filter: blur(3px);
-  pointer-events: none;
-}
-
-.fancy-btn:hover, .fancy-btn:focus {
-  transform: scale(1.04);
-  box-shadow: 0 4px 36px 0 rgba(0,255,136,0.16),0 1.5px 16px 0 rgba(234,56,76,0.13);
-}
-.fancy-btn:active {
-  transform: scale(0.98);
-}
-
-.fancy-btn > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* Spotlight hover effect for product cards */
-.spotlight {
-  transition: background 0.3s;
-  border-radius: 1rem;
-}
-
-.group:hover .spotlight,
-.group:focus-within .spotlight {
-  background: radial-gradient(ellipse 120px 90px at var(--x,50%) var(--y,50%),rgba(0,136,255,0.12) 0%,rgba(255,255,255,0.03) 100%);
-}
-
-/* JS for spotlight: see note in summary */
-
-/* Responsive adjustments if needed */

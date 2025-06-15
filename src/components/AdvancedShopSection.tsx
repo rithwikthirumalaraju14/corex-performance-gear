@@ -27,6 +27,13 @@ interface Product {
   category: string;
   badge?: string;
   featured?: boolean;
+  video?: string;
+  fitGuide?: {
+    fit: string;
+    material: string;
+    care: string;
+    sizeChart: { size: string, chest: string, length: string }[];
+  };
 }
 
 const allProducts: Product[] = [
@@ -48,7 +55,19 @@ const allProducts: Product[] = [
     colors: ['Black', 'White', 'Navy', 'Red'],
     category: 'tees',
     badge: 'SALE',
-    featured: true
+    featured: true,
+    video: 'https://www.youtube.com/embed/xp2qjshr-r4', // sample (pretend promo/fit video)
+    fitGuide: {
+      fit: "Athletic fit. True to size.",
+      material: "92% Polyester / 8% Spandex",
+      care: "Machine wash cold, tumble dry low.",
+      sizeChart: [
+        { size: "S", chest: "34-36\"", length: "28\"" },
+        { size: "M", chest: "38-40\"", length: "29\"" },
+        { size: "L", chest: "42-44\"", length: "30\"" },
+        { size: "XL", chest: "46-48\"", length: "31\"" }
+      ]
+    }
   },
   {
     id: 'cs-002',

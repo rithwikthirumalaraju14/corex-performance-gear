@@ -1,3 +1,4 @@
+
 import { Card, CardContent } from './ui/card';
 
 interface AthleteProps {
@@ -9,27 +10,24 @@ interface AthleteProps {
 
 const AthleteCard = ({ name, sport, quote, image }: AthleteProps) => {
   return (
-    <div className="relative group">
-      <div className="absolute inset-0 pointer-events-none rounded-2xl border border-white/25 shadow-[0_8px_32px_rgba(31,38,135,0.1)] z-0 glass-card" />
-      <Card className="overflow-hidden border-0 shadow-lg relative bg-transparent backdrop-blur-md z-10 glass-card group-hover:shadow-2xl transition-shadow duration-300">
-        <div className="grid grid-cols-1 md:grid-cols-2">
-          <div className="h-64 md:h-full">
-            <img 
-              src={image} 
-              alt={name} 
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <CardContent className="p-6 flex flex-col justify-center">
-            <blockquote className="text-lg italic mb-4">"{quote}"</blockquote>
-            <div className="mt-auto">
-              <p className="font-bold text-xl">{name}</p>
-              <p className="text-corex-red">{sport}</p>
-            </div>
-          </CardContent>
+    <Card className="overflow-hidden border-0 shadow-lg">
+      <div className="grid grid-cols-1 md:grid-cols-2">
+        <div className="h-64 md:h-full">
+          <img 
+            src={image} 
+            alt={name} 
+            className="w-full h-full object-cover"
+          />
         </div>
-      </Card>
-    </div>
+        <CardContent className="p-6 flex flex-col justify-center">
+          <blockquote className="text-lg italic mb-4">"{quote}"</blockquote>
+          <div className="mt-auto">
+            <p className="font-bold text-xl">{name}</p>
+            <p className="text-corex-red">{sport}</p>
+          </div>
+        </CardContent>
+      </div>
+    </Card>
   );
 };
 
