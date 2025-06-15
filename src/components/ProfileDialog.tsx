@@ -145,7 +145,7 @@ export function ProfileDialog({ trigger }: { trigger?: React.ReactNode }) {
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid grid-cols-4 mb-5">
               <TabsTrigger value="profile">Profile</TabsTrigger>
-              <TabsTrigger value="watchlist">Watchlist</TabsTrigger>
+              <TabsTrigger value="wishlist">Wishlist</TabsTrigger>
               <TabsTrigger value="orders">Orders</TabsTrigger>
               <TabsTrigger value="address">Address</TabsTrigger>
             </TabsList>
@@ -215,9 +215,9 @@ export function ProfileDialog({ trigger }: { trigger?: React.ReactNode }) {
               </form>
             </TabsContent>
 
-            <TabsContent value="watchlist">
+            <TabsContent value="wishlist">
               <div className="min-h-[120px]">
-                <div className="mb-2 font-semibold text-lg">Your Watchlist</div>
+                <div className="mb-2 font-semibold text-lg">Your Wishlist</div>
                 {wishlistLoading ? (
                   <div>Loading wishlist…</div>
                 ) : wishlisted && wishlisted.length > 0 ? (
