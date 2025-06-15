@@ -1,3 +1,4 @@
+
 import * as React from "react";
 import { useState } from "react";
 import {
@@ -15,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { User, LogOut } from "lucide-react";
 import { useProfile } from "@/hooks/useProfile";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import ProfileAuthForm from './ProfileAuthForm';
 import {
   Tabs,
@@ -74,8 +75,14 @@ export function ProfileDialog({ trigger }: { trigger?: React.ReactNode }) {
     full_name: "",
     phone: "",
     avatar_url: "",
+    address_street: "",
+    address_city: "",
+    address_state: "",
+    address_zip: "",
+    address_country: "",
   });
   const [editMode, setEditMode] = useState(false);
+  const [editAddress, setEditAddress] = useState(false);
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("profile");
 
@@ -86,6 +93,11 @@ export function ProfileDialog({ trigger }: { trigger?: React.ReactNode }) {
         full_name: profile.full_name || "",
         phone: profile.phone || "",
         avatar_url: profile.avatar_url || "",
+        address_street: profile.address_street || "",
+        address_city: profile.address_city || "",
+        address_state: profile.address_state || "",
+        address_zip: profile.address_zip || "",
+        address_country: profile.address_country || "",
       });
     }
   }, [profile]);
@@ -98,6 +110,23 @@ export function ProfileDialog({ trigger }: { trigger?: React.ReactNode }) {
       setEditMode(false);
     } else {
       toast({ title: "Error updating profile", description: "Check your data", variant: "destructive" });
+    }
+  };
+
+  const handleAddressSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const ok = await updateProfile({
+      address_street: form.address_street,
+      address_city: form.address_city,
+      address_state: form.address_state,
+      address_zip: form.address_zip,
+      address_country: form.address_country,
+    });
+    if (ok) {
+      toast({ title: "Address updated" });
+      setEditAddress(false);
+    } else {
+      toast({ title: "Error updating address", description: "Please check your details", variant: "destructive" });
     }
   };
 
@@ -248,9 +277,84 @@ export function ProfileDialog({ trigger }: { trigger?: React.ReactNode }) {
             </TabsContent>
 
             <TabsContent value="address">
-              <div className="min-h-[120px] flex flex-col items-center justify-center text-muted-foreground">
-                <span className="mb-2">Your address info will appear here.</span>
-                <span className="text-xs">(Feature coming soon!)</span>
+              <div className="min-h-[120px] w-full">
+                {!editAddress ? (
+                  <div className="space-y-3">
+                    <div className="mb-2 font-semibold text-lg">Your Address</div>
+                    <div>
+                      <span className="font-medium">Street: </span>
+                      {profile.address_street || <span className="text-muted-foreground">Not set</span>}
+                    </div>
+                    <div>
+                      <span className="font-medium">City: </span>
+                      {profile.address_city || <span className="text-muted-foreground">Not set</span>}
+                    </div>
+                    <div>
+                      <span className="font-medium">State: </span>
+                      {profile.address_state || <span className="text-muted-foreground">Not set</span>}
+                    </div>
+                    <div>
+                      <span className="font-medium">Zip: </span>
+                      {profile.address_zip || <span className="text-muted-foreground">Not set</span>}
+                    </div>
+                    <div>
+                      <span className="font-medium">Country: </span>
+                      {profile.address_country || <span className="text-muted-foreground">Not set</span>}
+                    </div>
+                    <Button variant="secondary" className="mt-4" onClick={() => setEditAddress(true)}>
+                      Edit Address
+                    </Button>
+                  </div>
+                ) : (
+                  <form className="space-y-4" onSubmit={handleAddressSave}>
+                    <div>
+                      <label className="text-sm font-medium">Street</label>
+                      <Input
+                        value={form.address_street}
+                        placeholder="Street address"
+                        onChange={e => setForm(f => ({ ...f, address_street: e.target.value }))}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium">City</label>
+                      <Input
+                        value={form.address_city}
+                        placeholder="City"
+                        onChange={e => setForm(f => ({ ...f, address_city: e.target.value }))}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium">State</label>
+                      <Input
+                        value={form.address_state}
+                        placeholder="State"
+                        onChange={e => setForm(f => ({ ...f, address_state: e.target.value }))}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium">Zip</label>
+                      <Input
+                        value={form.address_zip}
+                        placeholder="Zip code"
+                        onChange={e => setForm(f => ({ ...f, address_zip: e.target.value }))}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium">Country</label>
+                      <Input
+                        value={form.address_country}
+                        placeholder="Country"
+                        onChange={e => setForm(f => ({ ...f, address_country: e.target.value }))}
+                      />
+                    </div>
+                    <DialogFooter className="flex w-full justify-between items-center">
+                      <Button type="button" variant="secondary" onClick={() => setEditAddress(false)}>
+                        Cancel
+                      </Button>
+                      <Button type="submit">Save</Button>
+                    </DialogFooter>
+                  </form>
+                )}
               </div>
             </TabsContent>
 
