@@ -35,7 +35,7 @@ const Auth = () => {
         description: error.message,
       })
     } else {
-      await refreshProfile(); // <<< Fix: Ensure context has up-to-date profile
+      await refreshProfile(); // <--- Make sure we have the latest profile context after signing up!
       navigate('/'); // Redirect
     }
   };
@@ -52,7 +52,7 @@ const Auth = () => {
         description: error.message,
       })
     } else {
-      await refreshProfile(); // <<< Fix: Ensure context has up-to-date profile
+      await refreshProfile(); // <--- Make sure we have the latest profile context after signing in!
       navigate('/'); // Redirect
     }
   };
