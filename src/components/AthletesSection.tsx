@@ -34,15 +34,15 @@ const AthleteCard = ({ name, sport, quote, image }: AthleteProps) => {
 const AthletesSection = () => {
   const athletes = [
     {
-      name: "Alex Rivera",
-      sport: "CrossFit Athlete",
-      quote: "Core X compression gear gives me the support and freedom I need for my most intense training sessions.",
+      name: "Jamie Torres",
+      sport: "Powerlifter",
+      quote: "Core X gym shorts have survived every squat and deadlift I've thrown at them. Reliable, sweat-wicking, and built to last.",
       image: "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
     },
     {
-      name: "Tasha Williams",
-      sport: "Marathon Runner",
-      quote: "The X-Run collection has been a game-changer for my marathon training. Breathable, lightweight, and durable.",
+      name: "Morgan Lee",
+      sport: "HIIT Coach",
+      quote: "The FlexFit tops move with me through every burpee and sprint. These are my go-to gym shirts, period.",
       image: "https://images.unsplash.com/photo-1594381898411-846e7d193883?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80"
     },
   ];
@@ -52,8 +52,7 @@ const AthletesSection = () => {
       <div className="max-w-7xl mx-auto">
         <h2 className="text-5xl md:text-6xl mb-6 font-bebas">X Athletes</h2>
         <p className="text-lg mb-12 max-w-3xl">
-          Our gear is tested and trusted by professional athletes across various disciplines.
-          Here's what they have to say about training in Core X.
+          Our gear is tested by real athletes in the gym and under real weight. Check out what the Core X crew thinks after sweat, sets, and reps.
         </p>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -73,3 +72,4 @@ const AthletesSection = () => {
 };
 
 export default AthletesSection;
+
