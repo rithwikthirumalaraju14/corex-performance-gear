@@ -202,7 +202,7 @@ const AdvancedShopSection = () => {
   // --- PERSIST PRODUCT NAMES TO WINDOW for chatbot to use! ---
   useEffect(() => {
     // Available product names for chatbot context
-    window.__ADVANCED_PRODUCTS_LIST__ = allProducts.map((x) => x.name);
+    (window as any).__ADVANCED_PRODUCTS_LIST__ = allProducts.map((x) => x.name);
   }, []);
 
   return (

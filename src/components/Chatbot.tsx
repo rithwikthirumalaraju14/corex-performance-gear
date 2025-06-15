@@ -58,7 +58,7 @@ const Chatbot = () => {
   // Send prompt to Groq Cloud API
   const sendMessage = async () => {
     if (!input.trim() || loading || !apiKey) return;
-    const nextMessages = [
+    const nextMessages: { role: "system" | "user" | "assistant"; content: string }[] = [
       ...messages,
       { role: "user", content: input.trim() },
     ];
