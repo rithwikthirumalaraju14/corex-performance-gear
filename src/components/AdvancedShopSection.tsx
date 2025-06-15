@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Input } from './ui/input';
@@ -140,34 +140,11 @@ const allProducts: Product[] = [
   }
 ];
 
-const getAllSizes = () => {
-  const allSizes = new Set<string>();
-  allProducts.forEach(p => p.sizes.forEach(s => allSizes.add(s)));
-  return Array.from(allSizes);
-};
-const getAllColors = () => {
-  const allColors = new Set<string>();
-  allProducts.forEach(p => p.colors.forEach(c => allColors.add(c)));
-  return Array.from(allColors);
-};
-const getPriceBounds = () => {
-  let min = Number.POSITIVE_INFINITY,
-    max = Number.NEGATIVE_INFINITY;
-  allProducts.forEach(p => {
-    min = Math.min(min, p.price);
-    max = Math.max(max, p.price);
-  });
-  return [Math.floor(min), Math.ceil(max)];
-};
-
 const AdvancedShopSection = () => {
-  const [sortBy, setSortBy] = useState('featured');
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
-  const [selectedColors, setSelectedColors] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState<[number, number]>(getPriceBounds() as [number, number]);
-  const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [sortBy, setSortBy] = useState('featured');
+  const [filterCategory, setFilterCategory] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const { addItem } = useShoppingCart();
@@ -176,37 +153,11 @@ const AdvancedShopSection = () => {
   const { wishlisted, loading: wishlistLoading, add, remove, isWishlisted } = useWishlist(userId);
   const { toast } = useToast();
 
-  const minPrice = getPriceBounds()[0];
-  const maxPrice = getPriceBounds()[1];
-
   const filteredProducts = allProducts
     .filter(product => {
-      // Multi-category
-      const matchesCategory =
-        selectedCategories.length === 0 ||
-        selectedCategories.includes(product.category);
-
-      // Size
-      const matchesSize =
-        selectedSizes.length === 0 ||
-        product.sizes.some(size => selectedSizes.includes(size));
-
-      // Color
-      const matchesColor =
-        selectedColors.length === 0 ||
-        product.colors.some(color => selectedColors.includes(color));
-
-      // Price
-      const matchesPrice =
-        product.price >= priceRange[0] && product.price <= priceRange[1];
-
-      // Search
-      const query = searchQuery.trim().toLowerCase();
-      const matchesSearch = !query ||
-        product.name.toLowerCase().includes(query) ||
-        product.description.toLowerCase().includes(query);
-
-      return matchesCategory && matchesSize && matchesColor && matchesPrice && matchesSearch;
+      const matchesCategory = filterCategory === 'all' || product.category === filterCategory;
+      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesCategory && matchesSearch;
     })
     .sort((a, b) => {
       switch (sortBy) {
@@ -217,12 +168,6 @@ const AdvancedShopSection = () => {
         default: return (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
       }
     });
-
-  const getHighlight = useCallback((text: string) => {
-    if (!searchQuery) return text;
-    const regex = new RegExp(`(${searchQuery})`, 'ig');
-    return text.replace(regex, '<mark class="bg-yellow-200 rounded px-1">$1</mark>');
-  }, [searchQuery]);
 
   const handleQuickView = (product: Product) => {
     setSelectedProduct(product);
@@ -258,6 +203,7 @@ const AdvancedShopSection = () => {
     }
   };
 
+  // Persist product names to window for chatbot context
   useEffect(() => {
     (window as any).__ADVANCED_PRODUCTS_LIST__ = allProducts.map((x) => x.name);
   }, []);
@@ -272,20 +218,14 @@ const AdvancedShopSection = () => {
           </p>
         </div>
         <ShopFilters
-          selectedCategories={selectedCategories}
-          setSelectedCategories={setSelectedCategories}
-          selectedSizes={selectedSizes}
-          setSelectedSizes={setSelectedSizes}
-          selectedColors={selectedColors}
-          setSelectedColors={setSelectedColors}
-          priceRange={priceRange}
-          setPriceRange={setPriceRange}
-          minPrice={minPrice}
-          maxPrice={maxPrice}
+          filterCategory={filterCategory}
+          setFilterCategory={setFilterCategory}
           sortBy={sortBy}
           setSortBy={setSortBy}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
+          viewMode={viewMode}
+          setViewMode={setViewMode}
           total={allProducts.length}
           available={filteredProducts.length}
         />
@@ -297,7 +237,6 @@ const AdvancedShopSection = () => {
           handleWishlist={handleWishlist}
           handleAddToCart={handleAddToCart}
           handleQuickView={handleQuickView}
-          nameHighlight={getHighlight}
         />
 
         {filteredProducts.length === 0 && (
@@ -308,10 +247,7 @@ const AdvancedShopSection = () => {
               className="mt-4"
               onClick={() => {
                 setSearchQuery('');
-                setSelectedCategories([]);
-                setSelectedSizes([]);
-                setSelectedColors([]);
-                setPriceRange([minPrice, maxPrice]);
+                setFilterCategory('all');
               }}
             >
               Clear Filters
