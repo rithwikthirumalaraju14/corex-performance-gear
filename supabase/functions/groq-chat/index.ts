@@ -1,4 +1,6 @@
 
+// This Edge Function uses the GROQ_API_KEY stored securely in Supabase secrets.
+// To update the key, use the Supabase dashboard (Edge Functions > Secrets).
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -55,3 +57,5 @@ serve(async (req) => {
     );
   }
 });
+
+// The GROQ_API_KEY is NOT exposed to the frontend; all requests to Groq are handled by this function.
