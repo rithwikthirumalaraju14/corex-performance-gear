@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { useState } from "react";
 import {
@@ -24,9 +23,53 @@ import {
   TabsTrigger,
   TabsContent
 } from "@/components/ui/tabs";
+import { useWishlist } from "@/hooks/useWishlist";
 
 export function ProfileDialog({ trigger }: { trigger?: React.ReactNode }) {
   const { profile, loading, error, updateProfile } = useProfile();
+  const userId = profile?.id ?? null;
+  const { wishlisted, loading: wishlistLoading } = useWishlist(userId);
+
+  // Mockup products list for watchlist display
+  const allProducts: any[] = [
+    {
+      id: 'xt-001',
+      name: 'X-Perform Training Tee',
+      price: 45.0,
+      image: 'https://images.unsplash.com/photo-1581655353564-df123a1eb820?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80',
+    },
+    {
+      id: 'cs-002',
+      name: 'Core Compression Shorts',
+      price: 38.0,
+      image: 'https://images.unsplash.com/photo-1506902540976-5005d40e1e9e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80',
+    },
+    {
+      id: 'xb-003',
+      name: 'X-Flex Sports Bra',
+      price: 42.0,
+      image: 'https://images.unsplash.com/photo-1568252542512-9fe8fe9c87bb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=686&q=80',
+    },
+    {
+      id: 'xj-004',
+      name: 'X-Run Performance Joggers',
+      price: 65.0,
+      image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80',
+    },
+    {
+      id: 'xh-005',
+      name: 'X-Core Training Hoodie',
+      price: 75.0,
+      image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80',
+    },
+    {
+      id: 'xt-006',
+      name: 'X-Tank Performance Top',
+      price: 35.0,
+      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80',
+    },
+  ];
+
   const [form, setForm] = useState({
     full_name: "",
     phone: "",
@@ -173,9 +216,27 @@ export function ProfileDialog({ trigger }: { trigger?: React.ReactNode }) {
             </TabsContent>
 
             <TabsContent value="watchlist">
-              <div className="min-h-[120px] flex flex-col items-center justify-center text-muted-foreground">
-                <span className="mb-2">Your watchlist will appear here.</span>
-                <span className="text-xs">(Feature coming soon!)</span>
+              <div className="min-h-[120px]">
+                <div className="mb-2 font-semibold text-lg">Your Watchlist</div>
+                {wishlistLoading ? (
+                  <div>Loading wishlist…</div>
+                ) : wishlisted && wishlisted.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {allProducts
+                      .filter(prod => wishlisted.includes(prod.id))
+                      .map(prod => (
+                        <div key={prod.id} className="flex items-center gap-4 bg-muted rounded-lg p-3">
+                          <img src={prod.image} alt={prod.name} className="w-16 h-16 object-cover rounded-md" />
+                          <div>
+                            <div className="font-medium">{prod.name}</div>
+                            <div className="text-corex-red font-bold">${prod.price}</div>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                ) : (
+                  <div className="text-muted-foreground">No wishlisted products yet!</div>
+                )}
               </div>
             </TabsContent>
 

@@ -7,6 +7,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Badge } from './ui/badge';
 import { useShoppingCart } from '@/contexts/ShoppingCartContext';
 import ProductQuickView from './ProductQuickView';
+import { useProfile } from "@/hooks/useProfile";
+import { useWishlist } from "@/hooks/useWishlist";
+import { Heart, HeartOff } from "lucide-react";
 
 interface Product {
   id: string;
@@ -34,6 +37,9 @@ const AdvancedShopSection = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const { addItem } = useShoppingCart();
+  const { profile } = useProfile();
+  const userId = profile?.id ?? null;
+  const { wishlisted, loading: wishlistLoading, add, remove, isWishlisted } = useWishlist(userId);
 
   const allProducts: Product[] = [
     {
@@ -182,6 +188,18 @@ const AdvancedShopSection = () => {
     });
   };
 
+  const handleWishlist = (productId: string) => {
+    if (!userId) {
+      window.alert("Please sign in to use the wishlist feature.");
+      return;
+    }
+    if (isWishlisted(productId)) {
+      remove(productId);
+    } else {
+      add(productId);
+    }
+  };
+
   return (
     <section id="shop" className="py-20 px-6 md:px-12">
       <div className="max-w-7xl mx-auto">
@@ -281,8 +299,18 @@ const AdvancedShopSection = () => {
                   alt={product.name} 
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
-                {/* REMOVE WISHLIST BUTTON */}
-                {/* REMOVE: Button for wishlist/Heart icon */}
+                {/* WISHLIST BUTTON */}
+                <button
+                  className="absolute top-3 left-3 z-10 p-1 rounded-full bg-white/80 hover:bg-white shadow"
+                  aria-label={isWishlisted(product.id) ? "Remove from wishlist" : "Add to wishlist"}
+                  onClick={() => handleWishlist(product.id)}
+                  disabled={wishlistLoading}
+                  tabIndex={0}
+                >
+                  {isWishlisted(product.id)
+                    ? <Heart className="text-corex-red fill-corex-red" size={20} />
+                    : <Heart className="text-gray-400" size={20} />}
+                </button>
 
                 {product.badge && (
                   <Badge className={`absolute top-3 right-3 ${
