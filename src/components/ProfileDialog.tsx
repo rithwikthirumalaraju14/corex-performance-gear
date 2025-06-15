@@ -51,10 +51,12 @@ export function ProfileDialog({ trigger }: { trigger?: React.ReactNode }) {
   };
 
   const handleSignOut = async () => {
-    // sign out and reload
     await (await import("@/integrations/supabase/client")).supabase.auth.signOut();
     window.location.reload();
   };
+
+  // If error shows we're not logged in
+  const isAuthMissing = error === "Not logged in" || error?.toLowerCase().includes("not logged in") || error?.toLowerCase().includes("auth session missing");
 
   return (
     <Dialog>
@@ -79,9 +81,17 @@ export function ProfileDialog({ trigger }: { trigger?: React.ReactNode }) {
             {profile?.email}
           </DialogDescription>
         </DialogHeader>
-        {error && <div className="text-destructive">{error}</div>}
         {loading && <div>Loading…</div>}
-        {profile && (
+        {isAuthMissing ? (
+          <div className="text-destructive my-8 text-center">
+            You are not logged in.<br />
+            <span className="text-muted-foreground text-base">
+              Please sign in to access your profile.
+            </span>
+          </div>
+        ) : error ? (
+          <div className="text-destructive">{error}</div>
+        ) : profile && (
           <form onSubmit={handleSave} className="space-y-4">
             <div className="flex items-center gap-4">
               <Avatar className="h-16 w-16">
