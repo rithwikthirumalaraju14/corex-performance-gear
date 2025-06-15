@@ -3,7 +3,7 @@
 // To update the key, use the Supabase dashboard (Edge Functions > Secrets).
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { DOMParser } from "https://deno.land/x/deno_dom/deno-dom-wasm.ts";
+// import { DOMParser } from "https://deno.land/x/deno_dom/deno-dom-wasm.ts"; // Temporarily disabled for debugging.
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -14,12 +14,8 @@ const GROQ_API_KEY = Deno.env.get("GROQ_API_KEY");
 // Using a standard, reliable model from Groq
 const MODEL = "llama3-8b-8192";
 
-/**
- * Searches DuckDuckGo and returns the top search results as a string.
- * This relies on scraping and may break if DuckDuckGo changes its HTML structure.
- * @param query The search query.
- * @returns A string containing formatted search results, or an empty string if an error occurs.
- */
+// The search function is temporarily disabled for debugging.
+/*
 async function searchDuckDuckGo(query: string): Promise<string> {
   try {
     const response = await fetch(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`);
@@ -54,6 +50,7 @@ async function searchDuckDuckGo(query: string): Promise<string> {
     return "An error occurred while searching the web.";
   }
 }
+*/
 
 
 serve(async (req) => {
@@ -65,22 +62,8 @@ serve(async (req) => {
   try {
     const { messages } = await req.json();
 
-    // Get the user's latest question to use for the web search
-    const userQuery = messages.findLast((m: { role: string }) => m.role === 'user')?.content;
-
-    let searchContext = "";
-    if (userQuery) {
-      searchContext = await searchDuckDuckGo(userQuery);
-    }
-
-    // Deep copy messages to avoid side effects
-    const messagesForGroq = JSON.parse(JSON.stringify(messages));
-
-    // Find the system message and inject the search context
-    const systemMessage = messagesForGroq.find((m: { role: string }) => m.role === "system");
-    if (systemMessage) {
-      systemMessage.content += `\n\n## Web Search Context\nIf the user's question isn't about our products, use the following real-time web search results to provide an answer. Otherwise, prioritize product information. \n\n${searchContext}`;
-    }
+    // Web search logic is temporarily disabled to isolate potential issues.
+    // The chatbot will now directly use the Groq API without performing a web search first.
 
     // Securely build payload
     const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -91,7 +74,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         model: MODEL,
-        messages: messagesForGroq, // Use the modified messages array
+        messages: messages, // Using original messages for now
         max_tokens: 500,
       }),
     });
@@ -122,3 +105,4 @@ serve(async (req) => {
 });
 
 // The GROQ_API_KEY is NOT exposed to the frontend; all requests to Groq are handled by this function.
+
