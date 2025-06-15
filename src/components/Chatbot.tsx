@@ -1,23 +1,15 @@
 
 import React, { useState, useRef, useEffect } from "react";
-import { MessageCircle, X } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
 import { supabase } from "@/integrations/supabase/client";
+import ChatWindow from "./chatbot/ChatWindow";
 
 // Helper to fetch product names from global scope (populated by window)
 function getProductList(): string[] {
   // @ts-ignore
   return window.__ADVANCED_PRODUCTS_LIST__ || [];
 }
-
-const SAMPLE_QUESTIONS = [
-  "What is the difference between joggers and tights?",
-  "Are your compression shorts available in navy?",
-  "Which tops have moisture-wicking?",
-  "What's your most popular hoodie?",
-  "Do you have any items on sale?"
-];
 
 const getHistory = () => {
   try {
@@ -41,25 +33,19 @@ const Chatbot = () => {
       : [{
           role: "system",
           content:
-            "You are an expert assistant for a sports clothing brand. Available products: " +
+            "You are a helpful and friendly assistant for Core X, a sports clothing brand. You are an expert on our products and can also answer general knowledge questions, especially about fitness and wellness. Available products: " +
             getProductList().join(", ") +
-            ". Answer questions about available products and their attributes only. If asked about stock level, say you do not have inventory data.",
+            ". If asked about stock level, say you do not have inventory data.",
         }];
   });
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const chatPanelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (open && inputRef.current) inputRef.current.focus();
   }, [open]);
-
-  useEffect(() => {
-    if (chatPanelRef.current)
-      chatPanelRef.current.scrollTop = chatPanelRef.current.scrollHeight;
-  }, [messages.length, open]);
 
   useEffect(() => {
     // save chat except for empty or only system
@@ -111,18 +97,11 @@ const Chatbot = () => {
     setLoading(false);
   };
 
-  const handleInputKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && input.trim() && !loading) {
-      sendMessage();
-    }
-  };
-
   const handleSample = (q: string) => {
     setInput(q);
     inputRef.current?.focus();
   };
 
-  // Button that hovers bottom right
   return (
     <>
       <div className="fixed bottom-8 right-8 z-50">
@@ -137,69 +116,16 @@ const Chatbot = () => {
         )}
       </div>
       {open && (
-        <div className="fixed bottom-4 right-4 w-80 max-w-full z-50 bg-white border rounded-xl shadow-2xl flex flex-col h-[480px] animate-fade-in">
-          <div className="flex justify-between items-center py-3 px-4 border-b">
-            <span className="font-bold text-corex-blue">Ask Core X AI</span>
-            <button onClick={() => { setOpen(false);} } aria-label="Close chat">
-              <X className="h-5 w-5 text-gray-400 hover:text-gray-800" />
-            </button>
-          </div>
-          <div className="flex-1 overflow-y-auto bg-gray-50 px-4 py-2 space-y-2 text-sm" ref={chatPanelRef}>
-            {messages.length <= 1 && (
-              <div className="text-gray-400 text-xs my-2 font-medium">
-                👋 Hi there! Ask me anything about our products.<br />
-                <div className="flex flex-wrap mt-2 gap-1.5">
-                  {SAMPLE_QUESTIONS.map(q => (
-                    <button
-                      key={q}
-                      className="rounded border bg-white text-gray-600 px-2 py-1 text-xs shadow-sm hover:bg-corex-blue/10 focus:bg-corex-blue/10"
-                      style={{ borderColor: '#0088ff' }}
-                      tabIndex={0}
-                      onClick={() => handleSample(q)}
-                    >
-                      {q}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-            {messages.slice(1).map((m, i) => (
-              <div
-                key={i}
-                className={`mb-2 flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
-              >
-                <div className={`rounded-lg px-3 py-2 ${m.role === "user" ? "bg-corex-blue text-white" : "bg-gray-200 text-gray-800"}`}>
-                  {m.content}
-                </div>
-              </div>
-            ))}
-            {loading && (
-              <div className="flex justify-start mb-2">
-                <div className="bg-gray-200 text-gray-800 rounded-lg px-3 py-2">
-                  ...
-                </div>
-              </div>
-            )}
-          </div>
-          <div className="border-t p-3 bg-white">
-            <div className="flex gap-2">
-              <Input
-                ref={inputRef}
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                className="flex-1"
-                placeholder="Ask about our products..."
-                onKeyDown={handleInputKeyDown}
-                disabled={loading}
-                autoFocus
-              />
-              <Button onClick={sendMessage} disabled={!input.trim() || loading} className="bg-corex-blue text-white">
-                Send
-              </Button>
-            </div>
-          </div>
-        </div>
+        <ChatWindow 
+          onClose={() => setOpen(false)}
+          messages={messages}
+          loading={loading}
+          input={input}
+          setInput={setInput}
+          sendMessage={sendMessage}
+          handleSample={handleSample}
+          inputRef={inputRef}
+        />
       )}
     </>
   );
