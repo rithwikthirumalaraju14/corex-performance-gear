@@ -9,11 +9,11 @@ interface MessageListProps {
   onSampleClick: (question: string) => void;
 }
 
-// Pick on-brand bubble backgrounds
+// Bubbles: black for assistant, white for user, text color for contrast
 const assistantBubble =
-  "bg-gradient-to-br from-corex-blue via-corex-green to-corex-red text-white rounded-bl-2xl shadow";
+  "bg-black text-white rounded-bl-2xl shadow border border-gray-700";
 const userBubble =
-  "bg-corex-blue text-white rounded-br-2xl shadow";
+  "bg-white text-black rounded-br-2xl shadow border border-gray-300";
 
 const MessageList = ({ messages, loading, onSampleClick }: MessageListProps) => {
   const chatPanelRef = useRef<HTMLDivElement>(null);
@@ -25,7 +25,7 @@ const MessageList = ({ messages, loading, onSampleClick }: MessageListProps) => 
   }, [messages.length, loading]);
 
   return (
-    <div className="flex-1 overflow-y-auto bg-gradient-to-bl from-corex-red via-white/65 to-corex-green px-4 py-6 space-y-4 text-sm" ref={chatPanelRef}>
+    <div className="flex-1 overflow-y-auto bg-black px-4 py-6 space-y-4 text-sm" ref={chatPanelRef}>
       {messages.length <= 1 && <SampleQuestions onSampleClick={onSampleClick} />}
       {messages.slice(1).map((m, i) => (
         <div
@@ -33,15 +33,15 @@ const MessageList = ({ messages, loading, onSampleClick }: MessageListProps) => 
           className={`flex items-end gap-3 ${m.role === "user" ? "justify-end" : "justify-start"}`}
         >
           {m.role === "assistant" && (
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-corex-blue via-corex-green to-corex-red border-[3px] border-white flex items-center justify-center flex-shrink-0 shadow">
-              <Dumbbell className="w-5 h-5 text-white" />
+            <div className="w-9 h-9 rounded-full bg-white border-2 border-black flex items-center justify-center flex-shrink-0 shadow">
+              <Dumbbell className="w-5 h-5 text-black" />
             </div>
           )}
           <div className={`max-w-[75%] px-4 py-2.5 ${m.role === "user" ? userBubble : assistantBubble}`}>
             {m.content}
           </div>
           {m.role === "user" && (
-            <div className="w-9 h-9 rounded-full bg-corex-blue border-[3px] border-white flex items-center justify-center flex-shrink-0 shadow">
+            <div className="w-9 h-9 rounded-full bg-black border-2 border-white flex items-center justify-center flex-shrink-0 shadow">
               <User className="w-5 h-5 text-white" />
             </div>
           )}
@@ -49,8 +49,8 @@ const MessageList = ({ messages, loading, onSampleClick }: MessageListProps) => 
       ))}
       {loading && (
         <div className="flex items-end gap-3 justify-start">
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-corex-blue via-corex-green to-corex-red border-[3px] border-white flex items-center justify-center flex-shrink-0 shadow">
-            <Dumbbell className="w-5 h-5 text-white animate-pulse" />
+          <div className="w-9 h-9 rounded-full bg-white border-2 border-black flex items-center justify-center flex-shrink-0 shadow">
+            <Dumbbell className="w-5 h-5 text-black animate-pulse" />
           </div>
           <div className={`px-4 py-2.5 ${assistantBubble}`}>
             <div className="flex items-center justify-center space-x-1">
@@ -66,4 +66,3 @@ const MessageList = ({ messages, loading, onSampleClick }: MessageListProps) => 
 };
 
 export default MessageList;
-
