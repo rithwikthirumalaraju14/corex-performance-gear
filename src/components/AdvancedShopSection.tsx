@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from './ui/button';
-import { ArrowRight, Filter, Grid, List, Search, Eye, Heart } from 'lucide-react';
+import { ArrowRight, Filter, Grid, List, Search, Eye, Heart, HeartOff } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardTitle } from './ui/card';
 import { Input } from './ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
@@ -9,7 +9,6 @@ import { useShoppingCart } from '@/contexts/ShoppingCartContext';
 import ProductQuickView from './ProductQuickView';
 import { useProfile } from "@/hooks/useProfile";
 import { useWishlist } from "@/hooks/useWishlist";
-import { Heart, HeartOff } from "lucide-react";
 
 interface Product {
   id: string;
