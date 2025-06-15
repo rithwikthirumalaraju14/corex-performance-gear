@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from "react";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, Sparkles } from "lucide-react";
 import { Button } from "./ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import ChatWindow from "./chatbot/ChatWindow";
@@ -104,15 +104,31 @@ const Chatbot = () => {
 
   return (
     <>
-      <div className="fixed bottom-8 right-8 z-50">
+      <div className="fixed bottom-6 right-6 z-50">
         {!open && (
-          <Button
-            className="rounded-full p-3 bg-corex-blue text-white shadow-lg hover:bg-corex-red transition"
-            onClick={() => setOpen(true)}
-            aria-label="Open chatbot"
-          >
-            <MessageCircle className="w-6 h-6" />
-          </Button>
+          <div className="relative">
+            {/* Pulse animation ring */}
+            <div className="absolute inset-0 rounded-full bg-corex-blue/30 animate-ping"></div>
+            <div className="absolute inset-0 rounded-full bg-corex-blue/20 animate-pulse"></div>
+            
+            {/* Main button */}
+            <Button
+              className="relative w-16 h-16 rounded-full bg-gradient-to-r from-corex-blue to-corex-red text-white shadow-2xl hover:shadow-corex border-0 transition-all duration-300 hover:scale-110 group"
+              onClick={() => setOpen(true)}
+              aria-label="Open AI Assistant"
+            >
+              <div className="flex items-center justify-center">
+                <MessageCircle className="w-7 h-7 group-hover:scale-110 transition-transform duration-300" />
+                <Sparkles className="w-4 h-4 absolute -top-1 -right-1 text-yellow-300 animate-pulse" />
+              </div>
+            </Button>
+            
+            {/* Tooltip */}
+            <div className="absolute bottom-full right-0 mb-2 px-3 py-1 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+              Chat with AI Assistant
+              <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+            </div>
+          </div>
         )}
       </div>
       {open && (
