@@ -27,6 +27,7 @@ interface ShopGridProps {
   handleWishlist: (productId: string) => void;
   handleAddToCart: (product: Product) => void;
   handleQuickView: (product: Product) => void;
+  nameHighlight?: (name: string) => string | undefined;
 }
 
 const ShopGrid = ({
@@ -36,7 +37,8 @@ const ShopGrid = ({
   wishlistLoading,
   handleWishlist,
   handleAddToCart,
-  handleQuickView
+  handleQuickView,
+  nameHighlight
 }: ShopGridProps) => (
   <div className={`grid gap-8 ${viewMode === 'grid'
     ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
@@ -45,13 +47,17 @@ const ShopGrid = ({
     {products.map((product, index) => (
       <ProductCard
         key={product.id}
-        product={product}
+        product={{
+          ...product,
+          name: nameHighlight ? nameHighlight(product.name) : product.name
+        }}
         viewMode={viewMode}
         isWishlisted={isWishlisted(product.id)}
         wishlistLoading={wishlistLoading}
         handleWishlist={handleWishlist}
         handleAddToCart={handleAddToCart}
         handleQuickView={handleQuickView}
+        highlightName={!!nameHighlight}
       />
     ))}
   </div>
