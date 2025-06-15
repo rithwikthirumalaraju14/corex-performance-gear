@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { useState } from "react";
 import {
@@ -17,6 +16,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { User, LogOut } from "lucide-react";
 import { useProfile } from "@/hooks/useProfile";
 import { useToast } from "@/components/ui/use-toast";
+import ProfileAuthForm from './ProfileAuthForm';
 
 export function ProfileDialog({ trigger }: { trigger?: React.ReactNode }) {
   const { profile, loading, error, updateProfile } = useProfile();
@@ -56,7 +56,9 @@ export function ProfileDialog({ trigger }: { trigger?: React.ReactNode }) {
   };
 
   // If error shows we're not logged in
-  const isAuthMissing = error === "Not logged in" || error?.toLowerCase().includes("not logged in") || error?.toLowerCase().includes("auth session missing");
+  const isAuthMissing = error === "Not logged in" ||
+    error?.toLowerCase().includes("not logged in") ||
+    error?.toLowerCase().includes("auth session missing");
 
   return (
     <Dialog>
@@ -83,11 +85,8 @@ export function ProfileDialog({ trigger }: { trigger?: React.ReactNode }) {
         </DialogHeader>
         {loading && <div>Loading…</div>}
         {isAuthMissing ? (
-          <div className="text-destructive my-8 text-center">
-            You are not logged in.<br />
-            <span className="text-muted-foreground text-base">
-              Please sign in to access your profile.
-            </span>
+          <div className="my-8 text-center">
+            <ProfileAuthForm afterAuth={() => window.location.reload()} />
           </div>
         ) : error ? (
           <div className="text-destructive">{error}</div>
@@ -159,4 +158,3 @@ export function ProfileDialog({ trigger }: { trigger?: React.ReactNode }) {
     </Dialog>
   );
 }
-
