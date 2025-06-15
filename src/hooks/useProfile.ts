@@ -8,6 +8,11 @@ export type Profile = {
   full_name: string | null;
   phone: string | null;
   avatar_url: string | null;
+  address_street: string | null;
+  address_city: string | null;
+  address_state: string | null;
+  address_zip: string | null;
+  address_country: string | null;
 };
 
 export function useProfile() {
