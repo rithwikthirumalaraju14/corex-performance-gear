@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast"
 import { supabase } from "@/integrations/supabase/client";
-import { useProfile } from '@/contexts/ProfileContext';
 
 const Auth = () => {
   const [email, setEmail] = useState('');
@@ -14,7 +13,6 @@ const Auth = () => {
   const [phone, setPhone] = useState('');
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { refreshProfile } = useProfile();
 
   const handleSignUp = async () => {
     const { error } = await supabase.auth.signUp({
@@ -35,8 +33,7 @@ const Auth = () => {
         description: error.message,
       })
     } else {
-      await refreshProfile(); // <--- Make sure we have the latest profile context after signing up!
-      navigate('/'); // Redirect
+      navigate('/');
     }
   };
 
@@ -52,8 +49,7 @@ const Auth = () => {
         description: error.message,
       })
     } else {
-      await refreshProfile(); // <--- Make sure we have the latest profile context after signing in!
-      navigate('/'); // Redirect
+      navigate('/');
     }
   };
 

@@ -3,20 +3,15 @@ import { Menu, X, User, Search } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { useShoppingCart } from '@/contexts/ShoppingCartContext';
-import { useProfile } from '@/contexts/ProfileContext';
-import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
-import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 import ShoppingCart from './ShoppingCart';
-import ProfileDisplay from './ProfileDisplay';
 
 const AdvancedNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [profileOpen, setProfileOpen] = useState(false);
+
   const { getItemCount } = useShoppingCart();
-  const { profile } = useProfile();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,7 +24,6 @@ const AdvancedNavbar = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      // Scroll to shop section
       const shopSection = document.querySelector('#shop');
       if (shopSection) {
         shopSection.scrollIntoView({ behavior: 'smooth' });
@@ -86,32 +80,15 @@ const AdvancedNavbar = () => {
             >
               <Search size={20} />
             </Button>
-            
-            {/* User Profile */}
-            <Dialog open={profileOpen} onOpenChange={setProfileOpen}>
-              <DialogTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  className="hover:text-corex-red transition-colors duration-300"
-                >
-                  {profile ? (
-                    <Avatar className="w-8 h-8">
-                      <AvatarImage src={profile.avatar_url || undefined} alt={profile.full_name || ""} />
-                      <AvatarFallback className="text-xs">
-                        {(profile.full_name || "").split(' ').map(n => n[0]).join('')}
-                      </AvatarFallback>
-                    </Avatar>
-                  ) : (
-                    <User size={20} />
-                  )}
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
-                <ProfileDisplay onClose={() => setProfileOpen(false)} />
-              </DialogContent>
-            </Dialog>
-            
+            {/* User Profile Button (inactive) */}
+            <Button 
+              variant="ghost"
+              size="icon"
+              className="hover:text-corex-red transition-colors duration-300"
+              disabled
+            >
+              <User size={20} />
+            </Button>
             {/* Shopping Cart */}
             <ShoppingCart />
           </div>
@@ -120,25 +97,13 @@ const AdvancedNavbar = () => {
         {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center space-x-2">
           <ShoppingCart />
-          <Dialog open={profileOpen} onOpenChange={setProfileOpen}>
-            <DialogTrigger asChild>
-              <Button variant="ghost" size="icon">
-                {profile ? (
-                  <Avatar className="w-6 h-6">
-                    <AvatarImage src={profile.avatar_url || undefined} alt={profile.full_name || ""} />
-                    <AvatarFallback className="text-xs">
-                      {(profile.full_name || "").split(' ').map(n => n[0]).join('')}
-                    </AvatarFallback>
-                  </Avatar>
-                ) : (
-                  <User size={20} />
-                )}
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
-              <ProfileDisplay onClose={() => setProfileOpen(false)} />
-            </DialogContent>
-          </Dialog>
+          <Button 
+            variant="ghost"
+            size="icon"
+            disabled
+          >
+            <User size={20} />
+          </Button>
           <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? <X size={24} /> : <Menu size={24} />}
           </Button>

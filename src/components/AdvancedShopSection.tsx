@@ -7,7 +7,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Badge } from './ui/badge';
 import { useShoppingCart } from '@/contexts/ShoppingCartContext';
 import ProductQuickView from './ProductQuickView';
-import { useWishlist } from '@/hooks/useWishlist';
 
 interface Product {
   id: string;
@@ -34,9 +33,7 @@ const AdvancedShopSection = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [quickViewOpen, setQuickViewOpen] = useState(false);
-  const [wishlistItems, setWishlistItems] = useState<string[]>([]);
   const { addItem } = useShoppingCart();
-  const { wishlist, toggleWishlist, isInWishlist } = useWishlist();
 
   const allProducts: Product[] = [
     {
@@ -185,17 +182,6 @@ const AdvancedShopSection = () => {
     });
   };
 
-  const handleWishlistToggle = (productId: string) => {
-    setWishlistItems(prev => {
-      const isInWishlist = prev.includes(productId);
-      if (isInWishlist) {
-        return prev.filter(id => id !== productId);
-      } else {
-        return [...prev, productId];
-      }
-    });
-  };
-
   return (
     <section id="shop" className="py-20 px-6 md:px-12">
       <div className="max-w-7xl mx-auto">
@@ -295,18 +281,9 @@ const AdvancedShopSection = () => {
                   alt={product.name} 
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
-                {/* MOVE WISHLIST BUTTON TO TOP LEFT */}
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  onClick={() => toggleWishlist(product.id)}
-                  className={`absolute top-3 left-3 z-20 p-2 rounded-full shadow-md transition ${
-                    isInWishlist(product.id) ? 'bg-corex-red text-white hover:bg-red-700' : ''
-                  }`}
-                  aria-label={isInWishlist(product.id) ? "Remove from wishlist" : "Add to wishlist"}
-                >
-                  <Heart className={`h-4 w-4 ${isInWishlist(product.id) ? 'fill-current' : ''}`} />
-                </Button>
+                {/* REMOVE WISHLIST BUTTON */}
+                {/* REMOVE: Button for wishlist/Heart icon */}
+
                 {product.badge && (
                   <Badge className={`absolute top-3 right-3 ${
                     product.badge === 'SALE' ? 'bg-corex-red' : 'bg-corex-blue'
@@ -314,7 +291,6 @@ const AdvancedShopSection = () => {
                     {product.badge}
                   </Badge>
                 )}
-                {/* Hover Overlay - Removed quick view, only wishlist */}
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-2">
                 </div>
               </div>
