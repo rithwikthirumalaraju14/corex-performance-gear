@@ -4,8 +4,10 @@ import { Button } from './ui/button';
 import { ShoppingCart as CartIcon, Plus, Minus, Trash2, ArrowLeft } from 'lucide-react';
 import { useShoppingCart } from '@/contexts/ShoppingCartContext';
 import { Separator } from './ui/separator';
+import { useNavigate } from 'react-router-dom';
 
 const ShoppingCart = () => {
+  const navigate = useNavigate();
   const { 
     items, 
     removeItem, 
@@ -19,6 +21,11 @@ const ShoppingCart = () => {
 
   const itemCount = getItemCount();
   const totalPrice = getTotalPrice();
+
+  const handleCheckout = () => {
+    setIsOpen(false);
+    navigate('/checkout');
+  };
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -128,7 +135,10 @@ const ShoppingCart = () => {
                   </div>
                   <Separator />
                   <div className="space-y-3">
-                    <Button className="w-full bg-corex-red hover:bg-corex-red/90 text-white text-lg py-6">
+                    <Button 
+                      className="w-full bg-corex-red hover:bg-corex-red/90 text-white text-lg py-6"
+                      onClick={handleCheckout}
+                    >
                       Proceed to Checkout
                     </Button>
                     <Button 
